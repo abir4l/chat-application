@@ -1,0 +1,19 @@
+{
+  "name": "chat-server",
+  "version": "1.0.0",
+  "description": "Chat server for a chat application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/abir4l/chat-server.git"
+  },
+  "author": "Iteam Original",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abir4l/chat-server/issues"
+  },
+  "homepage": "https://github.com/abir4l/chat-server#readme"
+}
