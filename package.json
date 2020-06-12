@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/abir4l/chat-server/issues"
   },
-  "homepage": "https://github.com/abir4l/chat-server#readme"
+  "homepage": "https://github.com/abir4l/chat-server#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.18"
+  }
 }
