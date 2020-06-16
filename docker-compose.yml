@@ -1,0 +1,9 @@
+version : '3'
+services:
+    web:
+     container_name: node_server
+     build: ./docker/node/
+     volumes:
+         - ./src/:/usr/src/app
+     ports:
+         - '8080:8000'
