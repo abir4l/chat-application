@@ -2,7 +2,7 @@ const ex = require('express')
 
 const app = ex();
 
-app.get('/checking',(req,res) => {
+app.get('/check',(req,res) => {
  res.send('route added')
 });
 

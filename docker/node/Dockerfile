@@ -2,18 +2,11 @@ FROM node:10-alpine
 
 WORKDIR /usr/src/app
 
-RUN npm install
-
 EXPOSE 8000
 
-COPY ./entry.sh /entry.sh
+COPY src/package.json .
 
-RUN chmod u+x /entry.sh
+RUN npm install
 
-RUN ls -l /
-
-ENTRYPOINT ["/entry.sh"]
- 
-#CMD ["node", "index.js"]
-#CMD ["/bin/sh"]
+CMD ["npm", "run","dev"]
 
