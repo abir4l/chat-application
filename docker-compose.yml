@@ -11,5 +11,13 @@ services:
      expose: [8080]
      ports:
          - '8080:8000'
+    db:
+      image: mongo:3.6
+      container_name: mongo_db
+      volumes:
+          - dbdata:/data/db
+      ports:
+          - '27017:27017'
 volumes:
     node_modules:
+    dbdata:
