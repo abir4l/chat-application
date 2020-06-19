@@ -1,0 +1,24 @@
+version : '3'
+services:
+    web:
+     env_file: .env
+     build:
+        context: ./
+        dockerfile: docker/node/Dockerfile
+     container_name: node_server
+     volumes:
+         - ./src/:/usr/src/app
+         - node_modules:/usr/src/app/node_modules
+     expose: ["${NODE_PORT}"]
+     ports:
+         - '${NODE_PORT}:${NODE_PORT}'
+    db:
+      image: mongo:3.6
+      container_name: mongo_db
+      volumes:
+          - dbdata:/data/db
+      ports:
+          - '${MONGO_PORT}:27017'
+volumes:
+    node_modules:
+    dbdata:
