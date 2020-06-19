@@ -1,6 +1,7 @@
 const ex = require('express')
 const fs = require('fs') 
-const { Connection } = require('./db.js')
+const { Connection } = require('./database/db.js')
+const { Mongoose } = require('./database/mongoose.js')
 const bodyParser = require('body-parser')
 
 
@@ -9,6 +10,34 @@ const bodyParser = require('body-parser')
 const app = ex();
 app.use(bodyParser.json())
 
+app.get('/mongoose',(req,res) => {
+	
+	const userSchema = new Mongoose.db.Schema({
+			name: String
+	});
+
+	userSchema.methods.greet = function(reply){
+		const greeting = `${this.name} says hi !!!!`;
+		if(reply)
+			console.log(greeting.replace('says',' also says'));
+		else
+			console.log(greeting)
+	
+	}
+
+	const user = Mongoose.db.model('User',userSchema);
+	const linus = new user({name : 'linus'})
+	const abiral = new user({name:'Abiral'});
+	abiral.save((err,abiral) =>{
+		if(err) return console.log(err);
+		abiral.greet();
+	})
+	linus.greet(true);
+	res.send(abiral);
+
+	
+
+});
 app.get('/mongo',(req,res) => {
 
 	Connection.connect()
@@ -16,7 +45,7 @@ app.get('/mongo',(req,res) => {
 			doc = db.db('chat');
 			doc.collection('testData').find({}).toArray((err,result) =>{
 				res.send(result)
-	});
+			});
 	}).catch(err =>{
 			console.log(err)
 	});
