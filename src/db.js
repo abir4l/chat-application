@@ -5,9 +5,7 @@ class Connection{
 	static connect(){
 		if(this.db) return Promise.resolve(this.db);
 		return mongo.connect(this.url,this.options)
-		.then(db => { 
-				this.db = db;
-		});
+		.then(db => this.db = db);
 	}
 }
 Connection.db = null
