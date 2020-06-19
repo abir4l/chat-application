@@ -4,6 +4,7 @@ WORKDIR /usr/src/app
 
 EXPOSE 8000
 
+
 COPY src/package.json .
 
 RUN npm install
