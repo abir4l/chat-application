@@ -1,29 +1,19 @@
-const ex = require('express')
-const fs = require('fs') 
-const { Connection } = require('./database/db.js')
-const { Mongoose } = require('./database/mongoose.js')
-const bodyParser = require('body-parser')
+global.basePath = __dirname;
+const ex = require('express');
+const path = require('path');
+const constants = require(path.join(global.basePath,'lib','constants'))();
+const routesLib = require(path.join(global.basePath,'lib','routes'));
 
 
-//to be changed to a library reading env filee
+const { Connection } = require(path.join(global.basePath,'database','db'));
+const { Mongoose } = require('./database/mongoose.js');
+
 
 const app = ex();
-app.use(bodyParser.json())
 
-app.post('/post-check',(req,res)=>{
-	
-	res.send(req.body.data);
+app.use(require('body-parser').json());
+routesLib.loadRoutes(app); // load routes from route folder 
 
-});
-app.get('/check',(req,res) => {
-	res.send('route added')
-});
-
-app.get('/',(req,res) => {
-	res.send('hello world')
-});
-
-// env passed from docker
 app.listen(process.env.NODE_PORT,'0.0.0.0',() => {
-	console.log('started')
-})
+	console.log('started');
+});
