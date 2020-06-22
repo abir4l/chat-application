@@ -12,7 +12,8 @@ router.post('/register',userController.register);
 router.post('/check',userController.checkPassword);
 
 
-
-
-
+/**
+ *
+ * @type {{router: *, base: string}}
+ */
 module.exports = {router: router,base:'/user'};

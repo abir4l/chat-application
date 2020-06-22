@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 //user schema
+
 const userSchema = new Schema({
 
     name: { type: String, required: true },
@@ -11,4 +12,8 @@ const userSchema = new Schema({
 
 });
 
+/**
+ *
+ * @type {((typedArray: (Int8Array | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array), index: number, value: number) => number) | (() => string)}
+ */
 module.exports = mongoose.model('User', userSchema);

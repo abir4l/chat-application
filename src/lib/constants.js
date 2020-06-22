@@ -1,4 +1,9 @@
 const path = require('path');
+/**
+ *
+ * @param dirname
+ * @returns {{bycrypt_value: number, dir: (function(*=): string)}}
+ */
 module.exports =  function(dirname){
 
 	
