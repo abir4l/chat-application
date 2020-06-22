@@ -12,7 +12,9 @@ module.exports =  function(dirname){
 				paths = paths.concat(userPath);
 				return path.join.apply(null, paths);
 
-		}
+		},
+
+		bycrypt_value : 5
 					
 	}
 	

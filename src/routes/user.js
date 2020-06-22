@@ -9,6 +9,7 @@ const router = ex.Router();
 //login controller
 router.post('/login',userController.login);
 router.post('/register',userController.register);
+router.post('/check',userController.checkPassword);
 
 
 
