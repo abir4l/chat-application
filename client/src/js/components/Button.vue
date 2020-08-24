@@ -23,8 +23,16 @@ export default {
 </template>
 
 <style lang="css">
-button._button {
-  border: 1px solid #ccc;
-  padding: 5px 10px;
+
+.container{
+
+    margin-top:10px;
 }
+button._button {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    background: #6565e0;
+    color: white;
+}
+
 </style>

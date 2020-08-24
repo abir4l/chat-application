@@ -1,6 +1,21 @@
 
-button._button {
-  border: 1px solid #ccc;
-  padding: 5px 10px;
+.container{
+
+    margin-top:10px;
 }
+button._button {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    background: #6565e0;
+    color: white;
+}
+
+
+
+h1{
+    
+    font-size:12pt;
+    font-family: 'ubuntu'
+}
+
 
