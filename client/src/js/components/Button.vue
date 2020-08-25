@@ -22,7 +22,7 @@ export default {
   </div>
 </template>
 
-<style lang="css">
+<style scoped lang="css">
 
 .container{
 

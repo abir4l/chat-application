@@ -1,19 +1,28 @@
 import Vue from "vue";
 import Axios from 'axios';
-import trial from './components/Trial.vue'
-import button from './components/Button.vue'
-import router from 'vue-router'
+import homepage from './pages/Home.vue'
+import loginpage from './pages/Login.vue'
+import App from './App.vue'
+import VueRouter from 'vue-router'
 
 
 Vue.prototype.$http = Axios;
-Vue.component('trial',trial);
-Vue.component('xbutton',button);
 
-window.app = new Vue({ el:'#app',data: function(){
-        return {
 
-        }
-},
+Vue.use(VueRouter);
+const routes = [
+    {path:'/', component: homepage },
+    {path:'/login', component: loginpage }
+];
+
+const router = new VueRouter({
+        routes
+});
+
+window.app = new Vue({
+        el:'#app',
+        router:router,
+        render: (h) => h(App)
 });
 
 
