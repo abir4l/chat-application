@@ -1,4 +1,4 @@
-# chat-server
+# chat-application
 Online chat server for the client
 
 
