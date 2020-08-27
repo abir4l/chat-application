@@ -9,7 +9,7 @@ services:
         dockerfile: docker/node/Dockerfile
      container_name: node_server
      volumes:
-         - ./src/:/usr/src/app
+         - ./server/src/:/usr/src/app
          - node_modules:/usr/src/app/node_modules
      expose: ["${NODE_PORT}"]
      ports:
