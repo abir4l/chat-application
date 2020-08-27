@@ -1,10 +1,18 @@
 <script>
+import { mapState } from 'vuex';
 import xbutton from "./Button.vue";
 export default { 
 
+  components:{xbutton},
+  computed: mapState({
+    
+    homeCount: state => state.homeButtonCounter,
+    count: 'homeButtonCounter'
+
+
+  }),
   data: function () {
     return {
-      msg: "Hello world",
       clickCounter:0
     };
   },
@@ -12,6 +20,9 @@ export default {
   },
   methods: {
 
+      increaseHomeValue:function(ev){
+        this.$store.commit('increment');
+      },
       increaseValue: function(ev){
           this.clickCounter++;
       }
@@ -21,10 +32,12 @@ export default {
 </script>
 <template>
   <div class="content">
-    <h1>Loaded from the vue {{msg}}</h1>  
+    <span>Home button counter:: {{count}}</span>
     <p>Click counter so far {{clickCounter}}</p>
-    <span>Up dating numbers by clicking button on the child</span>
-    <xbutton @increased="increaseValue" click-counter=0 button-text="Click"></xbutton>
+    <xbutton @increased="increaseValue" click-counter=0 >Click</xbutton>
+    <div style="margin-top:15px">
+        <xbutton @increased="increaseHomeValue" click-counter=0>Raise Home counter</xbutton>
+    </div>
   </div>
 </template>
 
@@ -35,6 +48,15 @@ export default {
         font-size:12pt;
         font-family: 'ubuntu'
     
+    }
+    .content{
+        font-family:arial;
+        color:#FFF;
+        background: gray;
+        padding:10px;
+        margin-top:10px;
+        margin-bottom:10px;
+
     }
 
 </style>

@@ -1,6 +1,7 @@
 <script>
 export default {
-  props: ["buttonText", "clickCounter"],
+  name:'xbutton',
+  props: [ "clickCounter"],
   mounted: function () {
 
   },
@@ -18,7 +19,7 @@ export default {
 
 <template>
   <div class="container">
-    <button v-on:click="clicked" class="_button" type="button">{{buttonText}}</button>
+      <button v-on:click="clicked" class="_button" type="button"><slot></slot></button>
   </div>
 </template>
 
