@@ -1,29 +1,18 @@
 <script>
-import but from '../components/Button.vue';
 
 
 export default {
     
-    components:{but},
+	component:{},
     data: function(){
      return {
 
      };
     },
     computed:{
-
-        increment:function(){
-            return this.$store.state.count;
-        }
-
     },
     methods:{
         
-        countIncrease: function(){
-            
-            this.$store.commit('increaseHomeButton');
-        
-        },
         login: function(){
             this.$router.push('/login');
         },
@@ -38,11 +27,7 @@ export default {
 </style>
 <template>
     <div class="contents">
-        <h1>Home page {{increment}}</h1>
+        <h1>Home page</h1>
         <button v-on:click='login()'>login</button>
-        <div class="wrapper">
-            <test/>
-            <but @increased="countIncrease">Home Button</but>
-        </div>
     </div>
 </template>

@@ -2,14 +2,10 @@ import Vue from "vue";
 import Axios from 'axios';
 import App from './App.vue';
 import VueRouter from 'vue-router';
-import Vuex from 'vuex';
-import routes from './routes/route';
+import routes from './routes/route.js';
 import store from './store/store.js';
-import xbut from './components/Button.vue'
-import test from './components/Trial.vue'
 
 
-Vue.component('test',test);
 Vue.prototype.$http = Axios;
 Vue.use(VueRouter);
 
