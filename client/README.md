@@ -1,4 +1,4 @@
-# Chat server code
+# Chat client code
 ## How to run  
 Use ``` npm run build  ``` to build the code  
 Use ``` npm run watch  ``` to watch the code
