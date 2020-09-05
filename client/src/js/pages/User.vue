@@ -1,6 +1,8 @@
 <script>
+import chatBox from "../components/ChatBox.vue";
 export default {
 
+    components:{ 'chat-box':chatBox },
     data: function(){
      return {
 
@@ -8,9 +10,6 @@ export default {
     },
     methods:{
         
-        userPage(){
-            this.$router.push('/user');
-        },
         goBack: function(){
             window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/');
         }
@@ -25,8 +24,8 @@ export default {
 </style>
 <template>
     <div class="contents">
-        <h1>Login page</h1>
-        <button v-on:click='userPage()'>User</button>
+        <h1>""</h1>
         <button v-on:click='goBack()'>Back</button>
+        <chat-box/>
     </div>
 </template>

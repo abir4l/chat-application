@@ -11,3 +11,36 @@ button._button[data-v-3b0d61fe] {
 }
 
 
+
+.chat-message-block[data-v-0be319b7]{
+    margin:10px 0;
+}
+.chat-history[data-v-0be319b7]{
+
+    min-height:200px;
+    max-height:200px;
+    overflow-y:scroll;
+    margin-bottom:10px;
+    min-width: 500px;
+    max-width:500px;
+    border: 1px solid #ccc;
+}
+.container[data-v-0be319b7]{
+    margin-top:10px;
+}
+textarea[data-v-0be319b7]{
+}
+.chat-action[data-v-0be319b7]{
+    
+    display:flex;
+    flex-direction:column;
+    width:500px
+}
+button._button[data-v-0be319b7] {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    background: #6565e0;
+    color: white;
+}
+
+

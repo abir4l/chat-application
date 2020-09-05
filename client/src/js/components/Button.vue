@@ -1,26 +1,36 @@
 <script>
 export default {
   name:'xbutton',
-  props: [ "clickCounter"],
+  props: ["loading" ],
   mounted: function () {
 
   },
   methods: {
     clicked: function (event) {
-      this.counter++;
-      this.$emit('increased',this.counter);
+        this.$emit('clicked','');
     },
   },
+  mounted:{
+        console.log(this.loading);
+ },
+  computed: {
+    
+    showLoading: function(){
+       return this.loading;
+    }
+
+  },
   data: function () {
-    return { counter: this.clickCounter };
+    return {  
+
+
+    };
   },
 };
 </script>
 
 <template>
-  <div class="container">
-      <button v-on:click="clicked" class="_button" type="button"><slot></slot></button>
-  </div>
+      <button v-on:click="clicked" class="_button" type="button"><slot></slot><span v-if="showLoading">loading</span></button>
 </template>
 
 <style scoped lang="css">
