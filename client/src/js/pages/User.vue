@@ -5,7 +5,7 @@ export default {
     components:{ 'chat-box':chatBox },
     data: function(){
      return {
-
+        pageTitle : " User chat page"
      };
     },
     methods:{
@@ -24,7 +24,7 @@ export default {
 </style>
 <template>
     <div class="contents">
-        <h1>""</h1>
+        <h1>{{pageTitle}}</h1>
         <button v-on:click='goBack()'>Back</button>
         <chat-box/>
     </div>

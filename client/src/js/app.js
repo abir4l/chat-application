@@ -4,8 +4,14 @@ import App from './App.vue';
 import VueRouter from 'vue-router';
 import routes from './routes/route.js';
 import store from './store/store.js';
+import sanitize from 'vue-sanitize';
 
+let defaults = sanitize.defaults;
 
+defaults.allowedTags = defaults.allowedTags.filter((t) => {
+  return true;
+});
+Vue.use(sanitize,defaults);
 Vue.prototype.$http = Axios;
 Vue.use(VueRouter);
 
