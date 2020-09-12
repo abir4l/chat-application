@@ -1977,6 +1977,11 @@ __webpack_require__.r(__webpack_exports__);
   data: function () {
     return {};
   },
+  mounted: function () {
+    this.$http.get('https://api.cdnjs.com/libraries/jquery').then(res => {
+      console.log('getting data from api');
+    });
+  },
   computed: {},
   methods: {
     login: function () {
@@ -24742,7 +24747,12 @@ defaults.allowedTags = defaults.allowedTags.filter(t => {
   return true;
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_sanitize__WEBPACK_IMPORTED_MODULE_6___default.a, defaults);
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.$http = axios__WEBPACK_IMPORTED_MODULE_1___default.a;
+let axiosInstance = axios__WEBPACK_IMPORTED_MODULE_1___default.a.create({});
+axiosInstance.interceptors.request.use(request => request => {
+  console.log('using axios');
+  return request;
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.$http = axiosInstance;
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]);
 const router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
   routes: _routes_route_js__WEBPACK_IMPORTED_MODULE_4__["default"]

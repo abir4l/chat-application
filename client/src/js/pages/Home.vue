@@ -9,6 +9,16 @@ export default {
 
      };
     },
+    mounted:function(){
+
+        this.$http.get('https://api.cdnjs.com/libraries/jquery')
+        .then(res => {
+                console.log('getting data from api');
+
+        });
+
+
+    },
     computed:{
     },
     methods:{
