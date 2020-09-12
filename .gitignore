@@ -3,4 +3,4 @@
 *.swo
 .env
 *.idea/
-*.map
+*.map*

@@ -12,7 +12,17 @@ defaults.allowedTags = defaults.allowedTags.filter((t) => {
   return true;
 });
 Vue.use(sanitize,defaults);
-Vue.prototype.$http = Axios;
+let axiosInstance = Axios.create({ 
+});
+
+axiosInstance.interceptors.request.use(
+
+        request => (request) => {
+            console.log('using axios');
+            return request;
+        }
+)
+Vue.prototype.$http = axiosInstance;
 Vue.use(VueRouter);
 
 const router = new VueRouter({
