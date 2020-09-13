@@ -8,29 +8,38 @@ const common = require('../lib/common');
  * @param req
  * @param res
  */
-exports.login = async function(req, res) {
+exports.login = async function (req, res) {
     const { email, password } = req.body;
     const user = await userModel.findOne({
         email
     });
 
+    console.log(user);
     if (!user) {
         res.status(404).json({
-          message: "User not found"
+            message: "User not found"
         });
     }
 
+
+
     bcrypt.compare(password, user.password, (err, result) => {
+        if (err) 
+            res.status(500).json({
+                'message':'something went wrong with the user detail provided'
+            });
+
         if (result) {
-            const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN+"h" });
+            const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN + "h" });
             user.password = null;
             res.json({
-                user,
+                'email':user.email,
                 token,
             });
+
         } else {
             res.status(401).json({
-              message: "Unauthenticated"
+                message: "Unauthenticated"
             });
         }
     });
@@ -41,7 +50,7 @@ exports.login = async function(req, res) {
  * @param req
  * @param res
  */
-exports.register = function(req, res) {
+exports.register = function (req, res) {
     let user = req.body;
     bcrypt.hash(user.password, global.constants.bycrypt_value, (err, hash) => {
 
@@ -72,9 +81,9 @@ exports.register = function(req, res) {
  * @param res
  */
 //testing user hashed password with bycrypt
-exports.checkPassword = function(req, res) {
+exports.checkPassword = function (req, res) {
     let pass = req.body.password;
-    userModel.findOne({ 'email': req.body.email }, (err, user) =>{
+    userModel.findOne({ 'email': req.body.email }, (err, user) => {
         if (err || user == null) {
             console.log(err);
             res.send('user not found with ' + req.body.email);
@@ -93,17 +102,26 @@ exports.checkPassword = function(req, res) {
  * @param res
  */
 //get details for logged in user
-exports.getDetails = async function(req, res) {
+exports.getDetails = async function (req, res) {
     const token = await common.getToken(req);
     let data = await jwt.verify(token, process.env.JWT_SECRET);
 
     if (!data) {
         res.status(401).json({
-          message: "Unauthenticated"
+            message: "Unauthenticated"
         });
     }
 
     res.send(data.user);
+}
+
+
+exports.getAccessToken = function(req,res){
+
+    const token = await common.getToken(req);
+    let data = await jwt.verify(token, process.env.JWT_SECRET);
+    res.send(data);
+
 }
 
 

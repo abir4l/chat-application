@@ -6,7 +6,7 @@ services:
          - 8.8.8.8
      build:
         context: ./
-        dockerfile: docker/node/Dockerfile
+        dockerfile: ./docker/node/Dockerfile
      container_name: node_server
      volumes:
          - ./server/src/:/usr/src/app

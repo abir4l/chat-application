@@ -1972,20 +1972,25 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _services_HomeService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/HomeService */ "./src/js/services/HomeService.js");
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   component: {},
   data: function () {
-    return {};
+    return {
+      title: "Home page"
+    };
   },
   mounted: function () {
-    this.$http.get('https://api.cdnjs.com/libraries/jquery').then(res => {
-      console.log('getting data from api');
+    _services_HomeService__WEBPACK_IMPORTED_MODULE_0__["default"].loadlibraries().then(data => {
+      this.title = data.data.name;
+      console.log(data.data.name);
     });
   },
   computed: {},
   methods: {
     login: function () {
-      this.$router.push('/login');
+      this.$router.push("/login");
     }
   }
 });
@@ -2001,17 +2006,29 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _services_LoginService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/LoginService */ "./src/js/services/LoginService.js");
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function () {
-    return {};
+    return {
+      email: '',
+      password: ''
+    };
   },
   methods: {
+    login: function () {
+      _services_LoginService__WEBPACK_IMPORTED_MODULE_0__["default"].login({
+        email: this.email,
+        password: this.password
+      });
+    },
+
     userPage() {
-      this.$router.push('/user');
+      this.$router.push("/user");
     },
 
     goBack: function () {
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/');
+      this.$router.push("/");
     }
   }
 });
@@ -7869,19 +7886,25 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "contents" }, [
-    _c("h1", [_vm._v("Home page")]),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
-        on: {
-          click: function($event) {
-            return _vm.login()
-          }
-        }
-      },
-      [_vm._v("login")]
-    )
+    _c("div", { staticClass: "container" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("h1", [_vm._v(_vm._s(_vm.title))]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              on: {
+                click: function($event) {
+                  return _vm.login()
+                }
+              }
+            },
+            [_vm._v("login")]
+          )
+        ])
+      ])
+    ])
   ])
 }
 var staticRenderFns = []
@@ -7907,31 +7930,93 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "contents" }, [
-    _c("h1", [_vm._v("Login page")]),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
-        on: {
-          click: function($event) {
-            return _vm.userPage()
-          }
-        }
-      },
-      [_vm._v("User")]
-    ),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
-        on: {
-          click: function($event) {
-            return _vm.goBack()
-          }
-        }
-      },
-      [_vm._v("Back")]
-    )
+    _c("div", { staticClass: "container" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("h1", [_vm._v("Login page")]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              on: {
+                click: function($event) {
+                  return _vm.goBack()
+                }
+              }
+            },
+            [_vm._v("Back")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row mt-5" }, [
+        _c("div", [
+          _c("div", { staticClass: "form-group" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.email,
+                  expression: "email"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text", placeholder: "email" },
+              domProps: { value: _vm.email },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.email = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.password,
+                  expression: "password"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "password", placeholder: "password" },
+              domProps: { value: _vm.password },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.password = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    return _vm.login()
+                  }
+                }
+              },
+              [_vm._v("\n                Login\n            ")]
+            )
+          ])
+        ])
+      ])
+    ])
   ])
 }
 var staticRenderFns = []
@@ -24735,6 +24820,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store_store_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./store/store.js */ "./src/js/store/store.js");
 /* harmony import */ var vue_sanitize__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue-sanitize */ "./node_modules/vue-sanitize/dist/vue-sanitize.js");
 /* harmony import */ var vue_sanitize__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(vue_sanitize__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _lib_api_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./lib/api.js */ "./src/js/lib/api.js");
+
 
 
 
@@ -24747,12 +24834,7 @@ defaults.allowedTags = defaults.allowedTags.filter(t => {
   return true;
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_sanitize__WEBPACK_IMPORTED_MODULE_6___default.a, defaults);
-let axiosInstance = axios__WEBPACK_IMPORTED_MODULE_1___default.a.create({});
-axiosInstance.interceptors.request.use(request => request => {
-  console.log('using axios');
-  return request;
-});
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.$http = axiosInstance;
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.$http = _lib_api_js__WEBPACK_IMPORTED_MODULE_7__["default"];
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]);
 const router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
   routes: _routes_route_js__WEBPACK_IMPORTED_MODULE_4__["default"]
@@ -24937,6 +25019,48 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatBox_vue_vue_type_template_id_0be319b7_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./src/js/lib/api.js":
+/*!***************************!*\
+  !*** ./src/js/lib/api.js ***!
+  \***************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+let axiosInstance = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({});
+/* harmony default export */ __webpack_exports__["default"] = (axiosInstance);
+
+/***/ }),
+
+/***/ "./src/js/lib/authApi.js":
+/*!*******************************!*\
+  !*** ./src/js/lib/authApi.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+let axiosInstance = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({});
+axiosInstance.interceptors.request.use(async request => {
+  let data = await axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('http://localhost:8888/test');
+  let url = request.url;
+  url = url.substr(0, url.indexOf('jquery'));
+  url = url + data.data.new_token;
+  request.url = url;
+  return request;
+}, error => Promise.reject(error));
+/* harmony default export */ __webpack_exports__["default"] = (axiosInstance);
 
 /***/ }),
 
@@ -25173,6 +25297,55 @@ const routes = [{
   component: _pages_User_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
 }];
 /* harmony default export */ __webpack_exports__["default"] = (routes);
+
+/***/ }),
+
+/***/ "./src/js/services/HomeService.js":
+/*!****************************************!*\
+  !*** ./src/js/services/HomeService.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_authApi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/authApi */ "./src/js/lib/authApi.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  loadlibraries: function () {
+    return _lib_authApi__WEBPACK_IMPORTED_MODULE_0__["default"].get('https://api.cdnjs.com/libraries/jquery');
+  }
+});
+
+/***/ }),
+
+/***/ "./src/js/services/LoginService.js":
+/*!*****************************************!*\
+  !*** ./src/js/services/LoginService.js ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/api.js */ "./src/js/lib/api.js");
+
+const server = 'http://localhost:8888/';
+/* harmony default export */ __webpack_exports__["default"] = ({
+  login: function (user) {
+    _lib_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post(server + 'user/login', user).then(resp => {
+      let data = resp.data;
+      localStorage.setItem('refresh_token', data.token);
+      localStorage.setItem('email', data.email);
+    }).catch(er => {
+      if (er.response) {
+        if (er.response.status == 404) {
+          alert('User not found');
+        }
+      } else console.log(er);
+    });
+  }
+});
 
 /***/ }),
 
