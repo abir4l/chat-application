@@ -1,9 +1,6 @@
-import api from '../lib/authApi';
+import api from '../lib/api';
+import config from '../config.js';
 export default {
-
-    loadlibraries: function() {
-      return  api.get('https://api.cdnjs.com/libraries/jquery');
-    }
 
 }
 

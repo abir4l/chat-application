@@ -1,12 +1,10 @@
 import Vue from "vue";
-import Axios from 'axios';
 import App from './App.vue';
 import VueRouter from 'vue-router';
 import routes from './routes/route.js';
 import store from './store/store.js';
 import sanitize from 'vue-sanitize';
 import axiosInstance from './lib/api.js';
-
 let defaults = sanitize.defaults;
 
 defaults.allowedTags = defaults.allowedTags.filter((t) => {

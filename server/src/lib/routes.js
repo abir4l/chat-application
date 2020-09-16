@@ -4,8 +4,9 @@ const path = require('path');
 
 let dirnames = fs.readdirSync(global.constants.dir(['routes']));
 
-let data = dirnames.map(d => d.substr(0,d.indexOf('.')))
-		.map(dir => require(global.constants.dir(['routes',dir])));
+let data = dirnames.filter(d=>(d.indexOf('swp') == -1)) // removing vim files while editing
+            .map(d => d.substr(0,d.indexOf('.')))
+		    .map(dir => require(global.constants.dir(['routes',dir])));
 
 /**
  *

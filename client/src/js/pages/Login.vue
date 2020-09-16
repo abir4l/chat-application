@@ -9,16 +9,17 @@ export default {
     };
   },
   methods: {
+    
     login:function(){
         loginService.login({
             email:this.email,
             password:this.password
-        });
+        },this.$router);
     },
     userPage() {
       this.$router.push("/user");
     },
-    goBack: function () {
+    goToHomePage: function () {
       this.$router.push("/");
     },
   },
@@ -31,8 +32,8 @@ export default {
     <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <h1>Login page</h1>
-          <button v-on:click="goBack()">Back</button>
+          <h1></h1>
+          <button v-on:click="goToHomePage()">Home</button>
         </div>
       </div>
       <div class="row mt-5">

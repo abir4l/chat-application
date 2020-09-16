@@ -1,16 +1,17 @@
 import api from '../lib/api.js';
-const server = 'http://localhost:8888/';
+import config from '../config.js';
 export default {
 
-    login: function (user) {
+    login: function (user,router) {
 
-        
-        api.post(server + 'user/login', user)
+        api.post(config.url + 'user/login', user)
             .then(
                 resp => {
                     let data = resp.data;
-                    localStorage.setItem('refresh_token',data.token);
+                    localStorage.setItem('refresh_token',data.refreshToken);
+                    localStorage.setItem('access_token',data.accessToken);
                     localStorage.setItem('email',data.email);
+                    router.push('detail');
                 }
             ).catch(er => {
                 

@@ -14,7 +14,6 @@ exports.login = async function (req, res) {
         email
     });
 
-    console.log(user);
     if (!user) {
         res.status(404).json({
             message: "User not found"
@@ -30,11 +29,13 @@ exports.login = async function (req, res) {
             });
 
         if (result) {
-            const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN + "h" });
             user.password = null;
+            const refreshToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN + "h" });
+            const accessToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
             res.json({
                 'email':user.email,
-                token,
+                refreshToken,
+                accessToken,
             });
 
         } else {
@@ -49,14 +50,15 @@ exports.login = async function (req, res) {
  *
  * @param req
  * @param res
+ * todo handle validation errors
  */
 exports.register = function (req, res) {
     let user = req.body;
     bcrypt.hash(user.password, global.constants.bycrypt_value, (err, hash) => {
 
         if (err) {
-            console.log(err);
-            res.send('Error while saving the user');
+            res.status(500);
+            res.json('Error with saving user');
         }
 
         user.password = hash;
@@ -64,10 +66,10 @@ exports.register = function (req, res) {
         userInstance.save((err) => {
             if (err) {
                 console.log(err);
+                res.status(400);
                 res.send('Error while saving the user');
             } else {
                 res.send({
-
                     url: '',
                     message: 'saved successfully'
                 });
@@ -103,8 +105,9 @@ exports.checkPassword = function (req, res) {
  */
 //get details for logged in user
 exports.getDetails = async function (req, res) {
-    const token = await common.getToken(req);
-    let data = await jwt.verify(token, process.env.JWT_SECRET);
+    console.log('details page');
+    const token = common.getToken(req);
+    let data = await jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 
     if (!data) {
         res.status(401).json({
@@ -112,15 +115,29 @@ exports.getDetails = async function (req, res) {
         });
     }
 
-    res.send(data.user);
+    res.send(data);
 }
 
 
 exports.getAccessToken = function(req,res){
+    const token = common.getToken(req);
+    let data =  jwt.verify(token, process.env.JWT_SECRET);
+    userModel.findOne({ 'email': data.email }, (err, user) => {
+        if (err || user == null) {
+            console.log(err);
+            res.send('user not found with ' + req.body.email);
+        } else {
 
-    const token = await common.getToken(req);
-    let data = await jwt.verify(token, process.env.JWT_SECRET);
-    res.send(data);
+            /*
+            * at the moment we are not sending new refresh token
+            * as we are treating refresh token as the remember me token
+            * with this the user should be logging out in 24 hours
+            * */
+
+            const accessToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
+            res.json({accessToken});
+        }
+    });
 
 }
 

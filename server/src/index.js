@@ -18,7 +18,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const app = ex();
 app.use(require('body-parser').json());
-app.use(cors())
+app.use(cors());
 routesLib.loadRoutes(app); // load routes from route folder 
 
 console.log(process.env.NODE_PORT);
