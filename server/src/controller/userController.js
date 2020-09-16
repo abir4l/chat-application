@@ -105,7 +105,6 @@ exports.checkPassword = function (req, res) {
  */
 //get details for logged in user
 exports.getDetails = async function (req, res) {
-    console.log('details page');
     const token = common.getToken(req);
     let data = await jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 

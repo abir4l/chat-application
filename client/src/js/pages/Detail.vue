@@ -1,31 +1,39 @@
 <script>
-import service from '../services/DetailService.js'
-export default {
+    import service from '../services/DetailService.js'
 
-    components:{},
-    data: function(){
-     return {
-        pageTitle : " Detail ",
-         name:'',
-         email:'',
-     };
-    },
-    mounted: async function(){
-        let details = service.getDetails();
-        let data = await details;
-        this.name = data.data.name;
-        this.email = data.data.email;
+    export default {
 
-    },
-    methods:{
-        
-        goBack: function(){
-            this.$router.push('/')
+        components: {},
+        data: function () {
+            return {
+                pageTitle: " Detail ",
+                name: '',
+                email: '',
+            };
+        },
+        mounted: async function () {
+            let data;
+
+            let details = service.getDetails();
+            try {
+                data = await details;
+            }catch (e) {
+                console.log(e.message);
+                return;
+            }
+            this.name = data.data.name;
+            this.email = data.data.email;
+
+        },
+        methods: {
+
+            goBack: function () {
+                this.$router.push('/')
+            }
+
         }
 
     }
-
-}
 </script>
 <style>
 
@@ -42,12 +50,14 @@ export default {
             </div>
             <div class="row mt-5">
                 <div class="col-md-6">
-                        <p>{{name}} <small>{{email}}</small></p>
+                    <p>{{name}}
+                        <small>{{email}}</small>
+                    </p>
 
                 </div>
             </div>
-        
-        
+
+
         </div>
     </div>
-<
+    <

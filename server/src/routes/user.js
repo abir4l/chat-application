@@ -1,7 +1,6 @@
 /* user routes for  authentications */
 
 const ex = require('express');
-const path = require('path');
 const userController = require(global.constants.dir(['controller','userController']));
 const { withJWTAuthMiddleware } = require("express-kun");
 const router = ex.Router();

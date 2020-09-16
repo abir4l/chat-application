@@ -2,7 +2,10 @@ const ex = require('express');
 const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
-
+var corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200,
+}
 global.constants = require(path.join(__dirname,'lib','constants'))(__dirname);
 const routesLib = require(global.constants.dir(['lib','routes']));
 

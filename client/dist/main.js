@@ -1984,8 +1984,16 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: async function () {
+    let data;
     let details = _services_DetailService_js__WEBPACK_IMPORTED_MODULE_0__["default"].getDetails();
-    let data = await details;
+
+    try {
+      data = await details;
+    } catch (e) {
+      console.log(e.message);
+      return;
+    }
+
     this.name = data.data.name;
     this.email = data.data.email;
   },
@@ -2027,6 +2035,11 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     login: function () {
       this.$router.push("/login");
+    },
+    doLogout: function () {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('email'); //need to use state here to refresh the page
     }
   }
 });
@@ -8088,7 +8101,7 @@ var render = function() {
       _c("div", { staticClass: "row mt-5" }, [
         _c("div", { staticClass: "col-md-6" }, [
           _c("p", [
-            _vm._v(_vm._s(_vm.name) + " "),
+            _vm._v(_vm._s(_vm.name) + "\n                    "),
             _c("small", [_vm._v(_vm._s(_vm.email))])
           ])
         ])
@@ -8149,15 +8162,34 @@ var render = function() {
                 )
               : _vm._e(),
             _vm._v(" "),
-            _c(
-              "li",
-              [
-                _c("router-link", { attrs: { to: "/detail" } }, [
-                  _vm._v("Details")
+            !_vm.showLogin
+              ? _c(
+                  "li",
+                  [
+                    _c("router-link", { attrs: { to: "/detail" } }, [
+                      _vm._v("Details")
+                    ])
+                  ],
+                  1
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.showLogin
+              ? _c("li", [
+                  _c(
+                    "a",
+                    {
+                      attrs: { href: "#" },
+                      on: {
+                        click: function($event) {
+                          return _vm.doLogout()
+                        }
+                      }
+                    },
+                    [_vm._v("Logout")]
+                  )
                 ])
-              ],
-              1
-            )
+              : _vm._e()
           ])
         ])
       ])
@@ -25446,7 +25478,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
-  url: 'localhost:8888/'
+  url: 'http://localhost:8888/'
 });
 
 /***/ }),
@@ -25537,9 +25569,12 @@ __webpack_require__.r(__webpack_exports__);
 
 const tokenExpired = function () {
   let accessToken = localStorage.getItem("refresh_token");
-  let tokenObject = Object(jwt_decode__WEBPACK_IMPORTED_MODULE_0__["default"])(accessToken);
-  let expiryTime = new Date(tokenObject.exp * 1000);
-  return new Date() > expiryTime;
+
+  if (accessToken) {
+    let tokenObject = Object(jwt_decode__WEBPACK_IMPORTED_MODULE_0__["default"])(accessToken);
+    let expiryTime = new Date(tokenObject.exp * 1000);
+    return new Date() > expiryTime;
+  } else return true;
 };
 
 /***/ }),
@@ -25919,7 +25954,10 @@ const routes = [{
   component: _pages_User_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
 }, {
   path: '/detail',
-  component: _pages_Detail_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+  component: _pages_Detail_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
+  beforeRouteEnter: function (to, from, next) {
+    console.log("entering detail page");
+  }
 }, {
   path: '/register',
   component: _pages_Register_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
@@ -26041,8 +26079,29 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_0__["default"]);
 const store = new vuex__WEBPACK_IMPORTED_MODULE_0__["default"].Store({
-  state: {},
-  mutations: {}
+  state: {
+    loggedIn: false,
+    accessToken: '',
+    refreshToken: ''
+  },
+  mutations: {
+    doLogout() {
+      this.clearToken();
+      state.loggedIn = false;
+    },
+
+    clearToken() {
+      state.accessToken = '';
+      state.refreshToken = '';
+    },
+
+    storeLogintoStore(userInfo) {
+      state.loggedIn = true;
+      state.accessToken = userInfo.accessToken;
+      state.refreshToken = userInfo.refreshToken;
+    }
+
+  }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);
 

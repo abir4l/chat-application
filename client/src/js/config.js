@@ -1,4 +1,4 @@
 export default {
-    url: 'localhost:8888/'
+    url: 'http://localhost:8888/'
 
 }

@@ -8,7 +8,12 @@ const routes = [
     {path:'/', component: homepage },
     {path:'/login', component: loginpage },
     {path:'/user', component: userPage },
-    {path:'/detail', component: detailPage },
+    {path:'/detail', component: detailPage,beforeRouteEnter:function(to,from,next){
+
+            console.log("entering detail page")
+
+
+    }},
     {path:'/register', component: registerPage }
 ];
 
