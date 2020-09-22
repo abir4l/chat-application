@@ -1,5 +1,6 @@
 <script>
 import loginService from '../services/LoginService';
+import {mapActions} from 'vuex';
 export default {
   data: function () {
     return {
@@ -9,12 +10,16 @@ export default {
     };
   },
   methods: {
-    
-    login:function(){
+      ...mapActions([
+          'logout',
+          'storeToken',
+          'login'
+      ]),
+    doLogin:function(){
         loginService.login({
             email:this.email,
             password:this.password
-        },this.$router);
+        },this.$router,this.login);
     },
     userPage() {
       this.$router.push("/user");
@@ -45,7 +50,7 @@ export default {
             <input type="password" v-model="password" class="form-control" placeholder="password" />
           </div>
           <div class="form-group">
-              <button class="btn btn-primary" v-on:click="login()" type="button">
+              <button class="btn btn-primary" v-on:click="doLogin()" type="button">
                   Login
               </button>
           </div>

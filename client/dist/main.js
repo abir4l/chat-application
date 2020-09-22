@@ -1975,6 +1975,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_DetailService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/DetailService.js */ "./src/js/services/DetailService.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  beforeRouteEnter: function (to, from, next) {
+    let allowed = false;
+    next(vu => {
+      allowed = vu.$store.getters.getUserLoginStatus;
+    });
+    next(allowed);
+  },
   components: {},
   data: function () {
     return {
@@ -2017,6 +2024,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_HomeService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/HomeService */ "./src/js/services/HomeService.js");
 /* harmony import */ var _lib_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/common */ "./src/js/lib/common.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2027,19 +2036,13 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function () {},
-  computed: {
-    showLogin: function () {
-      return Object(_lib_common__WEBPACK_IMPORTED_MODULE_1__["tokenExpired"])();
-    }
+  computed: { ...Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])({
+      loggedIn: 'getUserLoginStatus'
+    })
   },
   methods: {
-    login: function () {
-      this.$router.push("/login");
-    },
     doLogout: function () {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      localStorage.removeItem('email'); //need to use state here to refresh the page
+      this.$store.dispatch('logout');
     }
   }
 });
@@ -2056,6 +2059,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_LoginService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/LoginService */ "./src/js/services/LoginService.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function () {
@@ -2064,12 +2069,12 @@ __webpack_require__.r(__webpack_exports__);
       password: ''
     };
   },
-  methods: {
-    login: function () {
+  methods: { ...Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(['logout', 'storeToken', 'login']),
+    doLogin: function () {
       _services_LoginService__WEBPACK_IMPORTED_MODULE_0__["default"].login({
         email: this.email,
         password: this.password
-      }, this.$router);
+      }, this.$router, this.login);
     },
 
     userPage() {
@@ -8138,7 +8143,7 @@ var render = function() {
           _c("h1", [_vm._v(_vm._s(_vm.title))]),
           _vm._v(" "),
           _c("ul", { staticClass: "nav flex-column" }, [
-            _vm.showLogin
+            !_vm.loggedIn
               ? _c(
                   "li",
                   [
@@ -8150,7 +8155,7 @@ var render = function() {
                 )
               : _vm._e(),
             _vm._v(" "),
-            _vm.showLogin
+            !_vm.loggedIn
               ? _c(
                   "li",
                   [
@@ -8162,7 +8167,7 @@ var render = function() {
                 )
               : _vm._e(),
             _vm._v(" "),
-            !_vm.showLogin
+            _vm.loggedIn
               ? _c(
                   "li",
                   [
@@ -8174,7 +8179,7 @@ var render = function() {
                 )
               : _vm._e(),
             _vm._v(" "),
-            !_vm.showLogin
+            _vm.loggedIn
               ? _c("li", [
                   _c(
                     "a",
@@ -8296,7 +8301,7 @@ var render = function() {
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
-                    return _vm.login()
+                    return _vm.doLogin()
                   }
                 }
               },
@@ -25281,13 +25286,9 @@ defaults.allowedTags = defaults.allowedTags.filter(t => {
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_sanitize__WEBPACK_IMPORTED_MODULE_5___default.a, defaults);
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.$http = _lib_api_js__WEBPACK_IMPORTED_MODULE_6__["default"];
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]);
-const router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
-  routes: _routes_route_js__WEBPACK_IMPORTED_MODULE_3__["default"]
-});
 window.app = new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
   el: '#app',
-  router: router,
+  router: _routes_route_js__WEBPACK_IMPORTED_MODULE_3__["default"],
   render: h => h(_App_vue__WEBPACK_IMPORTED_MODULE_1__["default"]),
   store: _store_store_js__WEBPACK_IMPORTED_MODULE_4__["default"]
 });
@@ -25512,17 +25513,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var jwt_decode__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jwt-decode */ "./node_modules/jwt-decode/build/jwt-decode.esm.js");
+/* harmony import */ var _store_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../store/store */ "./src/js/store/store.js");
+
 
 
 let axiosInstance = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({});
-
-function testToken(token) {
-  console.log(token);
-}
-
 axiosInstance.interceptors.request.use(async request => {
   //test for jwt expiry here
-  let token = localStorage.getItem('access_token'); //try to handle the exception here
+  // let token = localStorage.getItem('access_token');
+  let token = _store_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.getAccessToken; //try to handle the exception here
 
   let tokenObject = Object(jwt_decode__WEBPACK_IMPORTED_MODULE_1__["default"])(token);
   let expiryTime = new Date(tokenObject.exp * 1000);
@@ -25531,7 +25530,7 @@ axiosInstance.interceptors.request.use(async request => {
 
   if (timeNow > expiryTime) {
     // token expired
-    let refreshToken = localStorage.getItem('refresh_token');
+    let refreshToken = _store_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.getRefreshToken;
     let refreshTokenObject = Object(jwt_decode__WEBPACK_IMPORTED_MODULE_1__["default"])(refreshToken);
 
     if (new Date(refreshTokenObject.exp * 1000) > timeNow) {
@@ -25568,10 +25567,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jwt_decode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jwt-decode */ "./node_modules/jwt-decode/build/jwt-decode.esm.js");
 
 const tokenExpired = function () {
-  let accessToken = localStorage.getItem("refresh_token");
+  let refreshToken = localStorage.getItem("refresh_token");
 
-  if (accessToken) {
-    let tokenObject = Object(jwt_decode__WEBPACK_IMPORTED_MODULE_0__["default"])(accessToken);
+  if (refreshToken) {
+    let tokenObject = Object(jwt_decode__WEBPACK_IMPORTED_MODULE_0__["default"])(refreshToken);
     let expiryTime = new Date(tokenObject.exp * 1000);
     return new Date() > expiryTime;
   } else return true;
@@ -25938,11 +25937,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pages_User_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../pages/User.vue */ "./src/js/pages/User.vue");
 /* harmony import */ var _pages_Register_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../pages/Register.vue */ "./src/js/pages/Register.vue");
 /* harmony import */ var _pages_Detail_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../pages/Detail.vue */ "./src/js/pages/Detail.vue");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _store_store__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../store/store */ "./src/js/store/store.js");
 
 
 
 
 
+
+
+
+vue__WEBPACK_IMPORTED_MODULE_6__["default"].use(vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]);
 const routes = [{
   path: '/',
   component: _pages_Home_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
@@ -25954,15 +25960,15 @@ const routes = [{
   component: _pages_User_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
 }, {
   path: '/detail',
-  component: _pages_Detail_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
-  beforeRouteEnter: function (to, from, next) {
-    console.log("entering detail page");
-  }
+  component: _pages_Detail_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
 }, {
   path: '/register',
   component: _pages_Register_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
 }];
-/* harmony default export */ __webpack_exports__["default"] = (routes);
+const router = new vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]({
+  routes
+});
+/* harmony default export */ __webpack_exports__["default"] = (router);
 
 /***/ }),
 
@@ -26018,16 +26024,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  login: function (user, router) {
+  /**
+   *
+   * @param user
+   * @param router
+   * @param storeLogin: store ACTION function directly injected from component,
+   *                    in order to not use vuex outside vue components
+   */
+  login: function (user, router, storeLogin) {
     _lib_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post(_config_js__WEBPACK_IMPORTED_MODULE_1__["default"].url + 'user/login', user).then(resp => {
       let data = resp.data;
       localStorage.setItem('refresh_token', data.refreshToken);
       localStorage.setItem('access_token', data.accessToken);
       localStorage.setItem('email', data.email);
+      storeLogin(data);
       router.push('detail');
     }).catch(er => {
       if (er.response) {
-        if (er.response.status == 404) {
+        if (er.response.status === 404) {
           alert('User not found');
         }
       } else console.log(er);
@@ -26075,32 +26089,67 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _lib_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/common */ "./src/js/lib/common.js");
+
 
 
 vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_0__["default"]);
+let accessToken = localStorage.getItem('access_token');
+let refreshToken = localStorage.getItem('refresh_token');
 const store = new vuex__WEBPACK_IMPORTED_MODULE_0__["default"].Store({
   state: {
-    loggedIn: false,
-    accessToken: '',
-    refreshToken: ''
+    userState: {
+      loggedIn: !Object(_lib_common__WEBPACK_IMPORTED_MODULE_2__["tokenExpired"])(),
+      accessToken: accessToken ? accessToken : '',
+      refreshToken: refreshToken ? refreshToken : ''
+    }
+  },
+  getters: {
+    getUserToken: function (state) {
+      return `Access Token="${state.userState.accessToken}"`;
+    },
+    getUserLoginStatus: function (state) {
+      return state.userState.loggedIn;
+    },
+    getRefreshToken: function (state) {
+      return localStorage.getItem('refresh_token');
+    },
+    getAccessToken: function (state) {
+      return localStorage.getItem('access_token');
+    }
   },
   mutations: {
-    doLogout() {
-      this.clearToken();
-      state.loggedIn = false;
+    doLogout(state) {
+      state.userState.loggedIn = false;
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('email');
     },
 
-    clearToken() {
-      state.accessToken = '';
-      state.refreshToken = '';
+    clearToken(state) {
+      state.userState.accessToken = '';
+      state.userState.refreshToken = '';
     },
 
-    storeLogintoStore(userInfo) {
-      state.loggedIn = true;
-      state.accessToken = userInfo.accessToken;
-      state.refreshToken = userInfo.refreshToken;
+    doLogin(state, userInfo) {
+      state.userState.loggedIn = true;
+      state.userState.accessToken = userInfo.accessToken;
+      state.userState.refreshToken = userInfo.refreshToken;
     }
 
+  },
+  actions: {
+    logout: function ({
+      commit
+    }) {
+      commit('doLogout');
+      commit('clearToken');
+    },
+    login: function ({
+      commit
+    }, userInfo) {
+      commit('doLogin', userInfo);
+    }
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);

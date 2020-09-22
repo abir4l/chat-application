@@ -2,7 +2,13 @@
     import service from '../services/DetailService.js'
 
     export default {
-
+        beforeRouteEnter: function (to, from, next) {
+            let allowed = false;
+            next(vu => {
+                allowed = vu.$store.getters.getUserLoginStatus;
+            });
+            next(allowed);
+        },
         components: {},
         data: function () {
             return {
@@ -13,11 +19,10 @@
         },
         mounted: async function () {
             let data;
-
             let details = service.getDetails();
             try {
                 data = await details;
-            }catch (e) {
+            } catch (e) {
                 console.log(e.message);
                 return;
             }
@@ -44,7 +49,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h1>{{pageTitle}}</h1>
+                    <h1>{{ pageTitle }}</h1>
                     <button v-on:click='goBack()'>Back</button>
                 </div>
             </div>
@@ -60,4 +65,4 @@
 
         </div>
     </div>
-    <
+</template>
