@@ -1978,8 +1978,10 @@ __webpack_require__.r(__webpack_exports__);
   beforeRouteEnter: function (to, from, next) {
     let allowed = false;
     next(vu => {
+      debugger;
       allowed = vu.$store.getters.getUserLoginStatus;
     });
+    debugger;
     next(allowed);
   },
   components: {},
