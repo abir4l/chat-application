@@ -141,5 +141,13 @@ exports.getAccessToken = function(req,res){
 }
 
 
+exports.listUsers = async function(req,res){
+
+    const users = await userModel.find({}); // findall
+    res.send(users);
+
+}
+
+
 
 

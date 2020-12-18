@@ -7,7 +7,6 @@ const path = require('path');
 module.exports =  function(dirname){
 
 	
-	
 	//constants here
 
 	return {
@@ -18,8 +17,8 @@ module.exports =  function(dirname){
 				return path.join.apply(null, paths);
 
 		},
-
-		bycrypt_value : 5
+		bycrypt_value : 5,
+		message:'From constants'
 					
 	}
 	

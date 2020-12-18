@@ -10,6 +10,7 @@ const refreshTokenRoute = withJWTAuthMiddleware(router, process.env.JWT_SECRET);
 
 //login controller
 router.post('/login',userController.login);
+router.get('/list',userController.listUsers);
 router.post('/register',userController.register);
 router.post('/check',userController.checkPassword);
 refreshTokenRoute.post('/access-token',userController.getAccessToken);

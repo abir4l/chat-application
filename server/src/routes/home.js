@@ -5,7 +5,7 @@ const router = ex.Router();
 
 
 router.get('',(req,res)=>{
-	res.send(global.basePath);
+	res.send(global.constants);
 });
 
 
