@@ -4,3 +4,4 @@
 .env
 *.idea/
 *.map*
+.DS_Store
