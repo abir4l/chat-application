@@ -5,12 +5,23 @@ import {tokenExpired} from '../lib/common';
 Vue.use(Vuex);
 let accessToken = localStorage.getItem('access_token');
 let refreshToken = localStorage.getItem('refresh_token');
+let username = localStorage.getItem('username');
 const store = new Vuex.Store({
     state: {
+        
         userState: {
             loggedIn: !tokenExpired(),
             accessToken: accessToken ? accessToken : '',
-            refreshToken: refreshToken ? refreshToken : ''
+            refreshToken: refreshToken ? refreshToken : '',
+            username: username ? username : ''
+            
+        },
+        serverData:{
+            message:''
+        },
+        chatStore:{
+            reciever:{},
+            chatHistory:[]
         }
 
     },
@@ -26,6 +37,18 @@ const store = new Vuex.Store({
         },
         getAccessToken: function (state) {
             return localStorage.getItem('access_token');
+        },
+        getServerSocketData:function(state){
+            return state.serverData.message
+        },
+        getChatStore:function(state){
+            return state.chatStore;
+        },
+        getUserState: function(state){
+            return state.userState;
+        },
+        getChatHistory:function(state){
+            return state.chatStore.chatHistory;
         }
 
     },
@@ -40,12 +63,41 @@ const store = new Vuex.Store({
             state.userState.accessToken = '';
             state.userState.refreshToken = '';
         },
+       
         doLogin(state, userInfo) {
             state.userState.loggedIn = true;
             state.userState.accessToken = userInfo.accessToken;
             state.userState.refreshToken = userInfo.refreshToken;
+            state.userState.username = userInfo.username;
 
+        },
+        logServerCall(state,data){
+            state.serverData.message = data;
+        },       
+        doSetUpChat(state){
+            
+        },
+        doChat(state,data){
+            state.chatStore.chatHistory.push(data);
+        },
+        doLoadChat(state,data){
+            console.log('loading chat history data ');
+            data = data.map(
+                d =>{
+                    let currentUsername = state.userState.username;
+                    if(d.sender == currentUsername)
+                        d['type'] = 'from';
+                    else
+                        d['type'] = 'to';
+                    
+                        return d;
+
+                }
+            );
+            state.chatStore.chatHistory = data;
         }
+        
+
 
     },
     actions: {
@@ -55,7 +107,22 @@ const store = new Vuex.Store({
         },
         login: function ({commit}, userInfo) {
             commit('doLogin', userInfo);
+        },
+        serverCall: function({commit},data){
+            commit('logServerCall',data);
+        },
+        
+        setUpChat: function({commit}){
+            commit('doSetUpChat');
+        },
+        addChat:function({commit},data){
+            commit('doChat',data);  
+        },
+        loadChat:function({commit},data){
+            commit('doLoadChat',data);
         }
+        
+        
     }
 });
 

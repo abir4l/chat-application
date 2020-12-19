@@ -1,4 +1,6 @@
+const serverUrl = 'http://localhost:8888/';
 export default {
-    url: 'http://localhost:8888/'
+   
+    url: (path) =>serverUrl + path
 
 }

@@ -5,7 +5,8 @@ const router = ex.Router();
 const testController = require(global.constants.dir(['controller','testController']));
 
 
-router.get('',testController.test);
+router.get('/socket',testController.test);
+router.get('/mongo',testController.mongo);
 
 
 /**

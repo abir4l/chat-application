@@ -1,14 +1,8 @@
 <script>
-    import service from '../services/DetailService.js'
+    import service from '../services/DetailService.js';
+    import store from '../store/store.js'; // needed to use this way because the only way to access store inside beforeRouteEnter is to import store
 
     export default {
-        beforeRouteEnter: function (to, from, next) {
-            let allowed = false;
-            next(vu => {
-                allowed = vu.$store.getters.getUserLoginStatus;
-            });
-            next(allowed);
-        },
         components: {},
         data: function () {
             return {

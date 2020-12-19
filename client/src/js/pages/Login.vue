@@ -15,11 +15,16 @@ export default {
           'storeToken',
           'login'
       ]),
-    doLogin:function(){
-        loginService.login({
+    doLogin:async function(){
+        let user = await loginService.login({
             email:this.email,
             password:this.password
-        },this.$router,this.login);
+        });
+        if(user){
+            this.$store.dispatch("login",user);
+            this.$router.push('detail');
+        }
+          
     },
     userPage() {
       this.$router.push("/user");

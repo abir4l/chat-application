@@ -1,6 +1,7 @@
 import Axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import store from '../store/store'
+import store from '../store/store';
+import config from '../config.js'
 let axiosInstance = Axios.create({});
 
 axiosInstance.interceptors.request.use(
@@ -21,14 +22,13 @@ axiosInstance.interceptors.request.use(
             let refreshTokenObject = jwtDecode(refreshToken);
             if (new Date(refreshTokenObject.exp * 1000) > timeNow) {
                 console.log("fetching new token");
-                let response = await Axios.post('http://localhost:8888/user/access-token', {}, {headers: {"Authorization": "Bearer " + refreshToken}});
+                let response = await Axios.post(config.url('user/access-token'), {}, {headers: {"Authorization": "Bearer " + refreshToken}});
                 localStorage.setItem('access_token', response.data.accessToken);
                 token = response.data.accessToken;
             } else { // refresh token is expired as well, logout the user, cancel the request
-
+                store.dispatch("logout");
             }
         }
-        //logout if refreshtoken is also expired
         request.headers.Authorization = `Bearer ${token}`;
         return request;
     }, error => Promise.reject(error)
