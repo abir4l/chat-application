@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports ={
 
+    devtool:'source-map',
     entry: './src/js/app.js',
     mode:'development',
     output:{
@@ -17,11 +18,17 @@ module.exports ={
             {
                 test: /\.vue$/,
                 loader:'vue-loader',
-                include: [path.resolve(__dirname,'src')]
+                include: [path.resolve(__dirname,'src')],
+                options:{
+                    sourceMap:true
+                }
             },
             {
                 test: /\.js$/,
                 loader:'babel-loader',
+                options:{
+                    sourceMap:true
+                }
             },
             {
                 test: /\.css$/,

@@ -1,28 +1,66 @@
 <script>
+import loginService from '../services/LoginService';
+import {mapActions} from 'vuex';
 export default {
+  data: function () {
+    return {
+        email:'',
+        password:''
 
-    data: function(){
-     return {
-
-     };
-    },
-    methods:{
-        
-        goBack: function(){
-            window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/');
+    };
+  },
+  methods: {
+      ...mapActions([
+          'logout',
+          'storeToken',
+          'login'
+      ]),
+    doLogin:async function(){
+        let user = await loginService.login({
+            email:this.email,
+            password:this.password
+        });
+        if(user){
+            this.$store.dispatch("login",user);
+            this.$router.push('detail');
         }
-
-    }
-
-
-}
+          
+    },
+    userPage() {
+      this.$router.push("/user");
+    },
+    goToHomePage: function () {
+      this.$router.push("/");
+    },
+  },
+};
 </script>
 <style>
-
 </style>
 <template>
-    <div class="contents">
-        <h1>Login page</h1>
-        <button v-on:click='goBack()'>Back</button>
+  <div class="contents">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h1></h1>
+          <button v-on:click="goToHomePage()">Home</button>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div>
+          <div class="form-group">
+            <input type="text" v-model="email" class="form-control" placeholder="email" />
+          </div>
+          <div class="form-group">
+            <input type="password" v-model="password" class="form-control" placeholder="password" />
+          </div>
+          <div class="form-group">
+              <button class="btn btn-primary" v-on:click="doLogin()" type="button">
+                  Login
+              </button>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>

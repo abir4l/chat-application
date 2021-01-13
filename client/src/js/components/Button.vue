@@ -1,39 +1,44 @@
 <script>
 export default {
-  name:'xbutton',
-  props: [ "clickCounter"],
-  mounted: function () {
-
+  name: "xbutton",
+  props: ["loading"],
+  mounted: function () {},
+  computed:{
+    showLoading: function(){
+      return this.loading;
+    }
   },
   methods: {
     clicked: function (event) {
-      this.counter++;
-      this.$emit('increased',this.counter);
+      this.$emit("clicked", "");
     },
   },
+  mounted: function () {},
   data: function () {
-    return { counter: this.clickCounter };
+    return {
+    };
   },
 };
 </script>
 
 <template>
-  <div class="container">
-      <button v-on:click="clicked" class="_button" type="button"><slot></slot></button>
-  </div>
+  <button :disabled='showLoading' v-on:click="clicked" class="_button" type="button">
+    <slot v-if="!showLoading"></slot>
+    <span v-if="showLoading"> <i class="fa fa-circle-o-notch fa-spin"></i></span>
+  </button>
 </template>
 
 <style scoped lang="css">
-
-.container{
-
-    margin-top:10px;
+.container {
+  margin-top: 10px;
 }
 button._button {
-    border: 1px solid #ccc;
-    padding: 5px 10px;
-    background: #6565e0;
-    color: white;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  background: #6565e0;
+  color: white;
 }
-
+button._button[disabled=disabled]{
+  background: #9595e2;
+}
 </style>

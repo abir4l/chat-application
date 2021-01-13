@@ -1,16 +1,27 @@
 import Vue from "vue";
-import Axios from 'axios';
 import App from './App.vue';
 import VueRouter from 'vue-router';
-import routes from './routes/route.js';
+import router from './routes/route.js';
 import store from './store/store.js';
+import sanitize from 'vue-sanitize';
+import axiosInstance from './lib/api.js';
+import config from './config.js';
+import io from 'socket.io-client';
 
 
-Vue.prototype.$http = Axios;
-Vue.use(VueRouter);
+let defaults = sanitize.defaults;
 
-const router = new VueRouter({
-    routes
+defaults.allowedTags = defaults.allowedTags.filter((t) => {
+  return true;
+});
+
+Vue.use(sanitize,defaults);
+Vue.prototype.$http = axiosInstance;
+const socketIo = io(config.url(''));
+
+
+socketIo.on("logout",(data) =>{
+	store.dispatch("logout");
 });
 
 window.app = new Vue({
