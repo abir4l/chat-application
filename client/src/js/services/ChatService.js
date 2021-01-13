@@ -12,10 +12,13 @@ export default{
 			
 			 let ownSocket = io.connect(config.url(username));
              ownSocket.on('message', (data) =>{
-				console.log('socket message aayo');
-				console.log(data);
                 store.dispatch('loadChat',data);
-             });
+			 });
+			 ownSocket.on('disconnect',function(reason){
+				 api.get(config.url(''),res=>{
+					 debugger;
+				 })
+			 })
 		}
 
 	},

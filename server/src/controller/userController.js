@@ -2,8 +2,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const common = require('../lib/common');
 
+
 /**
-*
 * @param req
 * @param res
 */
@@ -106,6 +106,7 @@ exports.getDetails = async function (req, res) {
 exports.getAccessToken = function(req,res){
     const token = common.getToken(req);
     let data =  jwt.verify(token, process.env.JWT_SECRET);
+    
     global.constants.database("users")
     .findOne({ 'email': data.email }, (err, user) => {
         if (err || user == null) {
@@ -118,7 +119,7 @@ exports.getAccessToken = function(req,res){
             * as we are treating refresh token as the remember me token
             * with this the user should be logging out in 24 hours
             * */
-            
+
             const accessToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
             res.json({accessToken});
         }

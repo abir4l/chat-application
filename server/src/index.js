@@ -30,7 +30,8 @@ app.use(cors());
 
 const nodeServer = httpServer.createServer(app);
 
-var whitelist = ['http://localhost:4545', 'http://localhost:8080']
+var whitelist = ['http://localhost:4545', 'http://localhost:8080','http://localhost:4545/']
+
 
 const socketIo = ioServer(nodeServer,{
 	cors: {

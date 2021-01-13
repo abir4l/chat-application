@@ -13,7 +13,7 @@ axiosInstance.interceptors.request.use(
         let tokenObject = jwtDecode(token);
         let expiryTime = new Date(tokenObject.exp * 1000);
         let timeNow = new Date();
-
+        debugger;
         //verify token time here
         //get refreshtoken if acccess token is about to expire or is expired
         if (timeNow > expiryTime) { // token expired
