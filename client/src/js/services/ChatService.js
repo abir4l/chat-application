@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import api from '../lib/api.js';
+import api from '../lib/authApi';
 import config from '../config.js';
 import store from '../store/store'
 export default{
@@ -7,10 +7,13 @@ export default{
 
 	chatHandshake : async (username) => {
 		
-		let response = await api.post(config.url("user/chat/handshake"),{username:username})
+		let response = await api.post(config.url("user/chat/handshake"),{username})
 		if(response){
+			
 			 let ownSocket = io.connect(config.url(username));
              ownSocket.on('message', (data) =>{
+				console.log('socket message aayo');
+				console.log(data);
                 store.dispatch('loadChat',data);
              });
 		}

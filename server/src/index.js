@@ -30,19 +30,22 @@ app.use(cors());
 
 const nodeServer = httpServer.createServer(app);
 
+var whitelist = ['http://localhost:4545', 'http://localhost:8080']
 
 const socketIo = ioServer(nodeServer,{
 	cors: {
-	    origin: "http://localhost:4545",
+	    origin: function(origin,callback){
+			if (whitelist.indexOf(origin) !== -1) {
+				callback(null, true)
+			  } else {
+				callback(new Error('Not allowed by CORS'))
+			  }
+		},
 	    methods: ["GET", "POST"]
 	  }
 });
 
 
-
-// socketIo.on("connection", (socket) => {
-//   // ...
-// });
 
 
 

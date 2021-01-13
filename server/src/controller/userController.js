@@ -13,7 +13,6 @@ exports.login = async function (req, res) {
     let mongoDb = global.constants.mongoConnection;
     
     const user = await global.constants.database("users").findOne({email:email});
-    console.log(user);
     if (!user) {
         res.status(404).json({
             message: "User not found"
@@ -155,7 +154,6 @@ exports.setupChatSocket = (req,res) => {
         global.constants
         .socketHandler.of(username)
         .on('connection', (socket) => {
-            console.log(`socket opened for ${username}`);
             global.constants.userSockets
             .push(
                 { 
@@ -184,6 +182,7 @@ exports.sendMessage = async (req,res) => {
     
     const {sender,reciever,message} = req.body;
     
+    
    await global.constants.database("chatHistory")
     .insertOne({
         reciever:reciever,
@@ -203,11 +202,9 @@ exports.sendMessage = async (req,res) => {
                 reciever:sender
             }
     ]}).toArray((er,response)=>{
-        
         let recieverSocket = global.constants.userSockets.find(d => d.username === reciever);
         if(recieverSocket){
             recieverSocket.socketHandle.emit("message",response);
-            console.log(`socket to ${recieverSocket.username}` )
         }
         res.json({message:"success",data:response});
     });
@@ -218,7 +215,6 @@ exports.sendMessage = async (req,res) => {
 
 exports.loadMessage = async(req,res) => {
     const {sender,reciever} = req.body;
-    console.log(sender,reciever);
     let messages = await global.constants.database("chatHistory")
     .find(
         {$or:[

@@ -35,3 +35,7 @@ exports.mongo = async function(req,res){
 
 	// res.send("mongo testing here");
 }
+
+exports.socketTest = function(req,res){
+	
+}
