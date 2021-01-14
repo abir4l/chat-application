@@ -19,22 +19,17 @@ exports.login = async function (req, res) {
         });
     }
 
-    
-    
-    
     bcrypt.compare(password, user.password, (err, result) => {
         if (err) 
         res.status(500).json({
             'message':'something went wrong with the user detail provided'
         });
-        
-        
+                
         if (result) {
             user.password = null;
             const userDto = {'email':user.email,'name':user.name,"username":user.username };
             const refreshToken = jwt.sign( userDto, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN + "h" });
             const accessToken = jwt.sign(userDto, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
-   
             res.json({
                 'email':user.email,
                 'username':user.username,
@@ -103,6 +98,7 @@ exports.getDetails = async function (req, res) {
 }
 
 
+
 exports.getAccessToken = function(req,res){
     const token = common.getToken(req);
     let data =  jwt.verify(token, process.env.JWT_SECRET);
@@ -120,7 +116,7 @@ exports.getAccessToken = function(req,res){
             * with this the user should be logging out in 24 hours
             * */
 
-            const accessToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
+            const accessToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_ACCESS_SECRET, { expiresIn:3600 + "s" });
             res.json({accessToken});
         }
     });

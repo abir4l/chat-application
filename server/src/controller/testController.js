@@ -1,20 +1,26 @@
 
 exports.test = function(req,res){
 
-	let socketHandler = global.constants.socketHandler;
 	let handler = global.constants.userSockets.find(
 		d => d.username == req.query.to
 	);
 
 
+	
 	let message = req.query.message ?	req.query.message : 'from socket';
-	handler.socketHandle.emit("message",message);
-
-	socketHandler.emit("message",message);
+	
+	handler.socketHandle.emit("testingsocket",message);
+	// socketHandler.emit("test",message);
 	res.send({
 		message:"sending data to socket"
 	})   	
    
+}
+
+exports.handshake = function(req,res){
+
+
+	res.json({"message":"connected"});
 }
 
 

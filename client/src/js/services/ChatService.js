@@ -4,21 +4,36 @@ import config from '../config.js';
 import store from '../store/store'
 export default{
 
-
-	chatHandshake : async (username) => {
+	ownSocket:null,
+	username:'',
+	api:null,
+	disconnected(){
+		this.api.post(config.url("user/chat/handshake"),{username:this.username})
+		.then(resp=>{
+			if(resp){
+				this.ownSocket.connect();
+			}
+		}).catch(error =>{
+			console.log(error);
+		})
 		
+
+	},
+	async chatHandshake(username){
+		this.api = api;
+		this.username = username;
 		let response = await api.post(config.url("user/chat/handshake"),{username})
 		if(response){
-			
-			 let ownSocket = io.connect(config.url(username));
-             ownSocket.on('message', (data) =>{
+			this.ownSocket = io.connect(config.url(username));
+			this.ownSocket.on("testingsocket",(data)=>{
+				console.log('testing data',data);
+			});
+             this.ownSocket.on('message', (data) =>{
                 store.dispatch('loadChat',data);
 			 });
-			 ownSocket.on('disconnect',function(reason){
-				 api.get(config.url(''),res=>{
-					 debugger;
-				 })
-			 })
+			 let binded = this.disconnected.bind(this);
+			 this.ownSocket.on('disconnect',binded);
+			//  window.mysocket = this.ownSocket;
 		}
 
 	},
@@ -36,6 +51,8 @@ export default{
 		return  response.data;
 
 	}
+
+	
 
 	
 
