@@ -93,7 +93,7 @@ const store = new Vuex.Store({
                         return d;
 
                 }
-            );
+            ).reverse();
             state.chatStore.chatHistory = data;
         }
         

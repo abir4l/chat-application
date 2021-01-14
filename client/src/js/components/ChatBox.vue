@@ -70,7 +70,7 @@
           <div class="chat-message-content">
             <p v-html="escapedMessage(chat.message)"></p>
           </div>
-          <p class="chat-timing">{{moment(chat.timestamp).format('YYYY-MM-DD HH:mm:ss')}}</p>
+          <p class="chat-timing">{{moment(chat.timestamp.toLocaleString()).format('YYYY-MM-DD HH:mm:ss')}}</p>
         </div>
       </div>
     </div>

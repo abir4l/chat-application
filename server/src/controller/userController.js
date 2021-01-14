@@ -116,7 +116,7 @@ exports.getAccessToken = function(req,res){
             * with this the user should be logging out in 24 hours
             * */
 
-            const accessToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_ACCESS_SECRET, { expiresIn:3600 + "s" });
+            const accessToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
             res.json({accessToken});
         }
     });
@@ -198,10 +198,27 @@ exports.sendMessage = async (req,res) => {
                 sender:reciever,
                 reciever:sender
             }
-    ]}).toArray((er,response)=>{
+    ]})
+    .sort({timestamp : -1})
+    .limit(5)
+    .toArray((er,response)=>{
         let recieverSocket = global.constants.userSockets.find(d => d.username === reciever);
         if(recieverSocket){
             recieverSocket.socketHandle.emit("message",response);
+        }else{
+            //will think about it later
+        //     global.constants
+        // .socketHandler.of(reciever)
+        // .on('connection', (socket) => {
+        //     global.constants.userSockets
+        //     .push(
+        //         { 
+        //             username: reciever,
+        //             socketHandle: socket
+        //         } 
+        //         );
+        //     });
+
         }
         res.json({message:"success",data:response});
     });
@@ -224,8 +241,9 @@ exports.loadMessage = async(req,res) => {
                 reciever:sender
             }
     ]}
-    ).toArray();
-
+    ).
+    sort({timestamp : -1})
+    .limit(5).toArray();
     res.json(messages);
 
 }
