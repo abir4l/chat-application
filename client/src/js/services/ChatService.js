@@ -33,7 +33,7 @@ export default{
 			 });
 			 let binded = this.disconnected.bind(this);
 			 this.ownSocket.on('disconnect',binded);
-			//  window.mysocket = this.ownSocket;
+			 window.mysocket = this.ownSocket;
 		}
 
 	},

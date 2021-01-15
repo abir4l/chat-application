@@ -19,7 +19,7 @@ module.exports =  function(dirname,socket){
 		message:'From constants',
 		socketHandler:socket,
 		userSockets:[],
-		mongoConnection:null
+		mongoConnection:null	
 					
 	};
 	

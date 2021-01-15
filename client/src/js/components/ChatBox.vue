@@ -22,8 +22,9 @@
     },
 
     methods: {
-      moment: function () {
-        return moment();
+      moment: function (date) {
+        console.log(date);
+        return moment(date);
       },
       escapedMessage: function (data) {
         return this.$sanitize(data.replaceAll("\n", "<br>"));

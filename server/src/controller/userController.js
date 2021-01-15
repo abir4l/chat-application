@@ -161,7 +161,8 @@ exports.setupChatSocket = (req,res) => {
             });
         }
         res.send({
-            message:"socket listening"
+            message:"socket listening",
+            socketfound: userSocketHandler != undefined
         });
         
     }
