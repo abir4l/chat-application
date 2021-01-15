@@ -139,14 +139,12 @@ exports.wantsToChat = function(req,res){
     res.send('handshake sent');
 }
 
-
 exports.setupChatSocket = (req,res) => {
     
     const {username} = req.body;
     let userSocketHandler = global.constants.userSockets.find(d=>d.username == username);
     
     // don't make new connection if socket exists.
-    // TODO  test if the socket is closed
     if(!userSocketHandler){
         global.constants
         .socketHandler.of(username)
@@ -205,7 +203,8 @@ exports.sendMessage = async (req,res) => {
     .toArray((er,response)=>{
         let recieverSocket = global.constants.userSockets.find(d => d.username === reciever);
         if(recieverSocket){
-            recieverSocket.socketHandle.emit("message",response);
+            global.constants.socketHander.of(reciever).emit("message",response)
+            // recieverSocket.socketHandle.emit("message",response);
         }else{
             //will think about it later
         //     global.constants

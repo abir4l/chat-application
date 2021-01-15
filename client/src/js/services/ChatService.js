@@ -7,17 +7,18 @@ export default{
 	ownSocket:null,
 	username:'',
 	api:null,
-	disconnected(){
-		this.api.post(config.url("user/chat/handshake"),{username:this.username})
-		.then(resp=>{
-			if(resp){
-				this.ownSocket.connect();
-			}
-		}).catch(error =>{
-			console.log(error);
-		})
+	disconnected(reason){
+		if(reason === 'transport close'){
+			this.api.post(config.url("user/chat/handshake"),{username:this.username})
+			.then(resp=>{
+				if(resp){
+					this.ownSocket.connect();
+				}
+			}).catch(error =>{
+				console.log(error);
+			});
+		}
 		
-
 	},
 	async chatHandshake(username){
 		this.api = api;
@@ -26,6 +27,7 @@ export default{
 		if(response){
 			this.ownSocket = io.connect(config.url(username));
 			this.ownSocket.on("testingsocket",(data)=>{
+				console.log(this.ownSocket.id);
 				console.log('testing data',data);
 			});
              this.ownSocket.on('message', (data) =>{
