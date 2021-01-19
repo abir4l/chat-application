@@ -5,12 +5,9 @@
   export default {
     name: "chat-box",
     components: { xbutton: xbutton },
-    props: [],
+    props: ["chatHistory"],
     computed: {
-    ...mapGetters(
-        {
-            chatHistory: 'getChatHistory',
-        })
+   
     },
     filters: {
       nl2br: function (value) {
@@ -23,13 +20,13 @@
 
     methods: {
       moment: function (date) {
-        console.log(date);
         return moment(date);
       },
       escapedMessage: function (data) {
         return this.$sanitize(data.replaceAll("\n", "<br>"));
       },
       enterPressed: function (event) {
+        debugger;
       if (event.keyCode == 13 && !event.shiftKey) this.sendMessage(); // 13 is the carriage retun key
     },
     sendMessage: function () {
@@ -42,7 +39,6 @@
        
         // this.chatHistory.push(this.chatMessage);
         this.$emit("chat",this.chatMessage,(done)=>{
-            
             this.chatMessage = "";
             this.sendingChat = false;
             this.$refs["chat-box"].focus();    

@@ -22,7 +22,8 @@ const store = new Vuex.Store({
         chatStore:{
             reciever:{},
             chatHistory:[]
-        }
+        },
+        socketData:{}
 
     },
     getters: {
@@ -95,6 +96,9 @@ const store = new Vuex.Store({
                 }
             ).reverse();
             state.chatStore.chatHistory = data;
+        },
+        doAddSocket(state,data){
+            state.socketData.id = data;
         }
         
 
@@ -120,9 +124,11 @@ const store = new Vuex.Store({
         },
         loadChat:function({commit},data){
             commit('doLoadChat',data);
+        },
+        addSocketData:function({commit},data){
+            commit('doAddSocket',data);
         }
-        
-        
+               
     }
 });
 

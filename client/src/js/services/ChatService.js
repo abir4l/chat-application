@@ -13,6 +13,7 @@ export default{
 			.then(resp=>{
 				if(resp){
 					this.ownSocket.connect();
+					store.dispatch("addSocketData",this.ownSocket.id);
 				}
 			}).catch(error =>{
 				console.log(error);
@@ -35,6 +36,7 @@ export default{
 			 });
 			 let binded = this.disconnected.bind(this);
 			 this.ownSocket.on('disconnect',binded);
+			 store.dispatch("addSocketData",this.ownSocket.id);
 			 window.mysocket = this.ownSocket;
 		}
 

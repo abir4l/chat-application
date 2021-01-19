@@ -15,8 +15,9 @@ export default {
      ...mapGetters(
         {
             chatStore: 'getChatStore',
-            userData: 'getUserState'
-            
+            userData: 'getUserState',
+            chatHistory: 'getChatHistory',
+                   
         })
     },
     methods:{
@@ -60,6 +61,6 @@ export default {
     <div class="contents">
         <h1>{{pageTitle}}</h1>
         <button v-on:click='goBack()'>Back</button>
-        <chat-box v-on:chat='chatListener' />
+        <chat-box :chat-history="chatHistory" v-on:chat='chatListener' />
     </div>
 </template>
