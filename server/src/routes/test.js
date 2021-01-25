@@ -7,6 +7,7 @@ const testController = require(global.constants.dir(['controller','testControlle
 
 
 router.get('/socket',testController.test);
+router.get('/handler',testController.constantsocket);
 router.get('/mongo',testController.mongo);
 router.get("/handshake",testController.handshake);
 

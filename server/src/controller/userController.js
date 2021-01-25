@@ -178,14 +178,9 @@ exports.sendMessage = async (req,res) => {
     
     const {sender,reciever,message} = req.body;
     
-    
+    let data = {sender,reciever,message}
    await global.constants.database("chatHistory")
-    .insertOne({
-        reciever:reciever,
-        sender:sender,
-        message:message,
-        timestamp:new Date()
-    });
+    .insertOne({... data,timestamp:new Date()});
     global.constants.database("chatHistory")
     .find(
         {$or:[
@@ -197,30 +192,13 @@ exports.sendMessage = async (req,res) => {
                 sender:reciever,
                 reciever:sender
             }
-    ]})
-    .sort({timestamp : -1})
-    .limit(5)
+    ]}).sort({timestamp : -1}).limit(5)
     .toArray((er,response)=>{
-        let recieverSocket = global.constants.userSockets.find(d => d.username === reciever);
-        if(recieverSocket){
-            global.constants.socketHander.of(reciever).emit("message",response)
-            // recieverSocket.socketHandle.emit("message",response);
-        }else{
-            //will think about it later
-        //     global.constants
-        // .socketHandler.of(reciever)
-        // .on('connection', (socket) => {
-        //     global.constants.userSockets
-        //     .push(
-        //         { 
-        //             username: reciever,
-        //             socketHandle: socket
-        //         } 
-        //         );
-        //     });
-
-        }
+        //send it back to both the sender and reciever, in order to reload all the tabs
+        global.constants.socketHandler.of(reciever).emit("message",response);
+        global.constants.socketHandler.of(sender).emit("message",response);
         res.json({message:"success",data:response});
+
     });
     
 

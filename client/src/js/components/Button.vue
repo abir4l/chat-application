@@ -35,10 +35,10 @@ export default {
 button._button {
   border: 1px solid #ccc;
   padding: 5px 10px;
-  background: #6565e0;
+  /* background: #6565e0; */
   color: white;
 }
 button._button[disabled=disabled]{
-  background: #9595e2;
+  /* background: #9595e2; */
 }
 </style>

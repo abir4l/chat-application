@@ -1,5 +1,5 @@
 //const serverUrl = 'http://localhost:8888/';
-const serverUrl = 'https://7c5c137b0d45.ngrok.io/';
+const serverUrl = 'https://043faec52e48.ngrok.io/';
 export default {
    
     url: (path) =>serverUrl + path

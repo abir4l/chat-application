@@ -20,9 +20,9 @@ Vue.prototype.$http = axiosInstance;
 const socketIo = io(config.url(''));
 
 
-socketIo.on("logout",(data) =>{
-	store.dispatch("logout");
-});
+// socketIo.on("logout",(data) =>{
+// 	store.dispatch("logout");
+// });
 
 window.app = new Vue({
         el:'#app',

@@ -8,7 +8,7 @@ export default {
     components:{ 'chat-box':chatBox },
     data: function(){
      return {
-        pageTitle : " User chat page"
+        pageTitle : " "
      };
     },
     computed:{
@@ -25,7 +25,7 @@ export default {
         goBack: function(){
             window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/');
         },
-        chatListener: async function(message,something){
+        chatListener: async function(message,loaded){
             
             let reciever = this.$route.params.username;
             let sender = this.$store.getters.getUserState.username;
@@ -35,7 +35,7 @@ export default {
                 message:message
             });
             this.$store.dispatch("loadChat",history.data);
-            something(true);
+            loaded(true);
         }
 
     },
@@ -59,8 +59,21 @@ export default {
 </style>
 <template>
     <div class="contents">
-        <h1>{{pageTitle}}</h1>
-        <button v-on:click='goBack()'>Back</button>
-        <chat-box :chat-history="chatHistory" v-on:chat='chatListener' />
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h1 class="page-title">{{pageTitle}}</h1>
+                    <button v-on:click='goBack()'>Back</button>
+                    <chat-box :chat-history="chatHistory" v-on:chat='chatListener' />
+                </div>
+            </div>
+        </div>
+        
     </div>
 </template>
+<style scoped lang="css">
+.page-title{
+    font-size: 9pt;
+    font-family: 'roboto';
+}
+</style>

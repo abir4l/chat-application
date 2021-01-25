@@ -4,7 +4,7 @@
   import moment from 'moment';
   export default {
     name: "chat-box",
-    components: { xbutton: xbutton },
+    components: { xbutton },
     props: ["chatHistory"],
     computed: {
    
@@ -26,7 +26,6 @@
         return this.$sanitize(data.replaceAll("\n", "<br>"));
       },
       enterPressed: function (event) {
-        debugger;
       if (event.keyCode == 13 && !event.shiftKey) this.sendMessage(); // 13 is the carriage retun key
     },
     sendMessage: function () {
@@ -95,11 +94,11 @@
     width:50%
   }
   .chat-message-from{
-    background: #ccc;
+    /* background: #ccc; */
     float:left
   }
   .chat-message-to{
-    background: rgb(240, 96, 96);
+    /* background: rgb(240, 96, 96); */
     float:right
   }
   .chat-history {
@@ -107,13 +106,13 @@
     max-height: 500pxpx;
     overflow-y: scroll;
     margin-bottom: 10px;
-    border: 3px solid #ccc;
+    /* border: 3px solid #ccc; */
   }
   .container {
     margin-top: 10px;
   }
   textarea#message {
-    border-radius: 10px;
+    /* border-radius: 10px; */
     resize: none;
   }
   .chat-action {
@@ -128,10 +127,5 @@
   p.chat-timing {
     font-size: 9pt;
   }
-  button._button {
-    border: 1px solid #ccc;
-    padding: 5px 10px;
-    background: #49498a;
-    color: white;
-  }
+
 </style>

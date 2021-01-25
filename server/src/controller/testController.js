@@ -18,7 +18,11 @@ exports.test = function(req,res){
 exports.handshake = function(req,res){
 	res.json({"message":"connected"});
 }
-
+exports.constantsocket = function(req,res){
+	let reciever = req.query.to;
+	global.constants.socketHandler.of(reciever).emit("testingsocket","message");
+	res.send("message sent");
+}
 exports.mongo = async function(req,res){
 	let mongo = global.constants.mongoConnection;
 	

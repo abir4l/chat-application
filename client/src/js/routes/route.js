@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
   let refreshToken = localStorage.getItem("refresh_token");
   let accessToken = localStorage.getItem("access_token");
   let username = localStorage.getItem("username");
-  loginIfTokenExists(refreshToken,accessToken,username);
+  refreshToken && loginIfTokenExists(refreshToken,accessToken,username);
   next(true);
 });
 

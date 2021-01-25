@@ -59,6 +59,7 @@ const store = new Vuex.Store({
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
             localStorage.removeItem('email');
+            localStorage.removeItem('username');
         },
         clearToken(state) {
             state.userState.accessToken = '';
