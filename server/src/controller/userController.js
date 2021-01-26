@@ -177,30 +177,29 @@ exports.logout = function(req,res){
 exports.sendMessage = async (req,res) => {
     
     const {sender,reciever,message} = req.body;
+    let data = {sender,reciever,message};
     
-    let data = {sender,reciever,message}
-   await global.constants.database("chatHistory")
-    .insertOne({... data,timestamp:new Date()});
+    await global.constants.database("chatHistory")
+            .insertOne({... data,timestamp:new Date()});
+    
     global.constants.database("chatHistory")
-    .find(
-        {$or:[
-            {
-                reciever:reciever,
-                sender:sender
-            },
-            {   
-                sender:reciever,
-                reciever:sender
-            }
-    ]}).sort({timestamp : -1}).limit(5)
-    .toArray((er,response)=>{
-        //send it back to both the sender and reciever, in order to reload all the tabs
-        global.constants.socketHandler.of(reciever).emit("message",response);
-        global.constants.socketHandler.of(sender).emit("message",response);
-        res.json({message:"success",data:response});
-
-    });
-    
+            .find(
+            {$or:[
+                {
+                    reciever:reciever,
+                    sender:sender
+                },
+                {   
+                    sender:reciever,
+                    reciever:sender
+                }
+        ]}).sort({timestamp : -1}).limit(5)
+           .toArray((er,response)=>{
+                //send it back to both the sender and reciever, in order to reload all the tabs
+                global.constants.socketHandler.of(reciever).emit("message",response);
+                global.constants.socketHandler.of(sender).emit("message",response);
+            });
+    res.json({message:"success"});
 
 }
 

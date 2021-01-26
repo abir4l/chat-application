@@ -29,12 +29,16 @@ export default {
             
             let reciever = this.$route.params.username;
             let sender = this.$store.getters.getUserState.username;
-            let history = await chatService.sendMessage({
+            await chatService.sendMessage({
                 reciever:reciever,
                 sender:sender,
                 message:message
             });
-            this.$store.dispatch("loadChat",history.data);
+            /**
+             * The data will be sent from the socket now
+             * hence no need to get data back on call
+             */
+            // this.$store.dispatch("loadChat",history.data);
             loaded(true);
         }
 

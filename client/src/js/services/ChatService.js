@@ -27,7 +27,6 @@ export default{
 		if(response){
 			this.ownSocket = io.connect(config.url(username));
 			this.ownSocket.on("testingsocket",(data)=>{
-				// console.log(this.ownSocket.id);
 				console.log('testing data',data);
 			});
              this.ownSocket.on('message', (data) =>{
