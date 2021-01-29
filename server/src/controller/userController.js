@@ -20,11 +20,12 @@ exports.login = async function (req, res) {
     }
 
     bcrypt.compare(password, user.password, (err, result) => {
-        if (err) 
-        res.status(500).json({
-            'message':'something went wrong with the user detail provided'
-        });
-                
+        if (err) {
+            res.status(500).json({
+                'message':'something went wrong with the user detail provided'
+            });
+        }
+
         if (result) {
             user.password = null;
             const userDto = {'email':user.email,'name':user.name,"username":user.username };
@@ -36,7 +37,6 @@ exports.login = async function (req, res) {
                 refreshToken,
                 accessToken,
             });
-            
         } else {
             res.status(401).json({
                 message: "Unauthenticated"
@@ -53,6 +53,23 @@ exports.login = async function (req, res) {
 */
 exports.register = function (req, res) {
     let user = req.body;
+    let errors = [];
+    let required = ['email', 'name', 'password', 'username'];
+
+    required.map((field) => {
+        if (!user.hasOwnProperty(field) || user[field] == '') {
+            errors.push({ [field] : field + " is required"});
+        }
+    });
+
+    if (errors.length > 0) {
+        res.status(400);
+        res.json({
+            'msg': 'Validation Error',
+            'errors': errors
+        });
+    }
+
     bcrypt.hash(user.password, global.constants.bycrypt_value, (err, hash) => {
         
         if (err) {
