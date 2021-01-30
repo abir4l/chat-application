@@ -27,9 +27,8 @@ services:
      container_name: node_server
         volumes:
           - ./client/src:/usr/src/app
-     expose: ["${NODE_PORT}"]
      ports:
-          - '${NODE_PORT}:${NODE_PORT}'
+     
 volumes:
     dbdata:
     dist:
