@@ -30,7 +30,7 @@ app.use(cors());
 
 const nodeServer = httpServer.createServer(app);
 
-var whitelist = ['http://localhost:4545', 'http://localhost:8080','http://localhost:4545/','http://chat.abiralkhanal.com:8888/']
+var whitelist = ['http://localhost:4545', 'http://localhost:8080','http://localhost:4545/','http://chat.abiralkhanal.com:8080/']
 
 
 
