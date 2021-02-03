@@ -59,6 +59,6 @@ routesLib.loadRoutes(app); // load routes from route folder
 console.log(`server running on port ${process.env.NODE_PORT}`);
 nodeServer.listen(process.env.NODE_PORT,'0.0.0.0', async () => {
 	let connection = MongoClient.connect("mongodb://db/");
-	global.constants.obj.mongoConnection = await connection;
+	global.constants.mongoConnection = await connection;
 });
 

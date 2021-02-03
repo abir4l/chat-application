@@ -20,15 +20,6 @@ services:
           - dbdata:/data/db
       ports:
           - '${MONGO_PORT}:27017'
-    client:
-     build:
-        context: ./
-        dockerfile: ./docker/client/Dockerfile
-     container_name: node_server
-        volumes:
-          - ./client/src:/usr/src/app
-     ports:
-     
 volumes:
     dbdata:
     dist:
