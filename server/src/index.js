@@ -36,13 +36,7 @@ var whitelist = ['http://localhost:4545', 'http://localhost:8080','http://localh
 
 const socketIo = ioServer(nodeServer,{
 	cors: {
-	    origin: function(origin,callback){
-			if (whitelist.indexOf(origin) !== -1) {
-				callback(null, true)
-			  } else {
-				callback(new Error('Not allowed by CORS'))
-			  }
-		},
+	    origin: "*",
 	    methods: ["GET", "POST"]
 	  }
 });
