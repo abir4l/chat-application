@@ -1,17 +1,15 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const common = require('../lib/common');
-
-
+const axios = require('axios');
+const qs = require('qs');
 /**
 * @param req
 * @param res
 */
 exports.login = async function (req, res) {
     const { email, password } = req.body;
-    
-    let mongoDb = global.constants.mongoConnection;
-    
+
     const user = await global.constants.database("users").findOne({email:email});
     if (!user) {
         res.status(404).json({
@@ -51,7 +49,7 @@ exports.login = async function (req, res) {
 * @param res
 * todo handle validation errors
 */
-exports.register = function (req, res) {
+exports.register = async function (req, res) {
     let user = req.body;
     let errors = [];
     let required = ['email', 'name', 'password', 'username'];
@@ -70,28 +68,48 @@ exports.register = function (req, res) {
         });
     }
 
+    try {
+
+        const emailUser = await global.constants.database("users").findOne({email:user.email}).catch(err => { console.log(err) });
+
+        if (emailUser) {
+            res.status(400).json({
+                message: "Email already in use!"
+            });
+        }
+
+        const userNameUser = await global.constants.database("users").findOne({username:user.username}).catch(err => { console.log(err) });
+
+        if (userNameUser) {
+            res.status(400).json({
+                message: "Username already in use!"
+            });
+        }
+    } catch (err) {
+        res.status(400);
+        res.send('Error while saving the user');
+    }
+
     bcrypt.hash(user.password, global.constants.bycrypt_value, (err, hash) => {
         
         if (err) {
             res.status(500);
             res.json('Error with saving user');
         }
-        
-        user.password = hash;
-        global.constants.database("users")
-        .insertOne(user,(err,result)=>{
-            if (err) {
-                console.log(err);
-                res.status(400);
-                res.send('Error while saving the user');
-            } else {
-                res.send({
-                    url: '',
-                    message: 'saved successfully'
-                });
-            }
-        });
-        
+        try {
+            user.password = hash;
+            global.constants.database("users")
+            .insertOne(user,(err,result)=>{
+                if (!err) {
+                    res.send({
+                        message: 'saved successfully'
+                    });
+                }
+            })
+        } catch(err) {
+            res.status(400);
+            res.send('Error while saving the user');
+        }
     })
 }
 
@@ -240,6 +258,31 @@ exports.loadMessage = async(req,res) => {
     .limit(5).toArray();
     res.json(messages);
 
+}
+
+exports.recaptcha = async(req,res) => {
+    if (req.body['Response'] === undefined || req.body['Response'] === '' || req.body['Response'] === null) {
+        return res.json({"responseCode" : 1,"responseDesc" : "Please select captcha"});
+    }
+
+    try {
+        let result = await axios({
+            method: 'post',
+            url: 'https://www.google.com/recaptcha/api/siteverify',
+            params: {
+                secret: '6LdIYVUaAAAAAG_It6dK0M_YFMoF-Ul4zJysBavq',
+                response: req.body['Response']
+            }
+        });
+        let data = result.data || {};
+        if(!data.success){
+            res.json({'success': false});
+        }
+
+        res.json({'success': true});
+    } catch(err) {
+        res.json({'success': false});
+    }
 }
     
     

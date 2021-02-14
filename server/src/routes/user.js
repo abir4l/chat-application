@@ -14,6 +14,7 @@ const refreshTokenRoute = withJWTAuthMiddleware(router, process.env.JWT_SECRET);
 router.post('/login',userController.login);
 protectedRouter.get('/list',userController.listUsers);
 router.post('/register',userController.register);
+router.post('/recaptcha/validate',userController.recaptcha);
 protectedRouter.post('/chat/handshake',userController.setupChatSocket);
 protectedRouter.post('/chat/send-message',userController.sendMessage);
 protectedRouter.post('/chat/load-message',userController.loadMessage);
