@@ -4,3 +4,160 @@
 p, textarea{
     font-weight: 100;
 }
+
+.form-input{
+    background-color:#D4CDCD
+}
+.form-input::placeholder{
+    color:#948E8E;
+}
+.text-color-grey{
+    color:#948E8E;
+}
+.text-color-red{
+    color: #EA5D5D;
+}
+
+a.text-color-red:hover{
+    color: #EA5D5D;
+    text-decoration: none;
+}
+.btn-primary-custom:hover{
+    color:#eee;
+}
+.btn-primary-custom{
+    background:#EA5D5D;
+    color:white;
+}
+.login-wrapper,.register-wrapper,.detail-wrapper,.users-wrapper,.chat-wrapper{
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 50px;
+    margin:auto;
+}
+
+.user-profile-pic{
+    background:#EA5D5D;
+    border-radius: 100px;
+    height: 100px;
+    width:100px;
+    margin: auto 0  ;
+}
+.user-profile-pic span{
+    color: white;
+    display: block;
+    font-size: 46pt;
+    text-align: center;
+}
+
+.user-profile-pic-sm{
+    width:50px;
+    height:50px
+}
+
+.user-profile-pic-sm span{
+    font-size:25pt
+
+}
+.custom-title{
+    color:#EA5D5D;
+    font-weight: 400;
+}
+.login-controls {
+    display: flex;
+    justify-content: space-between;
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+.login-wrapper .form-group {
+    margin-bottom: 0;
+}
+.detail-contents{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.display-inline-block{
+    display: inline-block;
+}
+.width-80{
+    width:80px
+}
+.width-200{
+    width:200px
+}
+.center-alignment{
+    margin:auto
+}
+.nav-urls{
+    text-transform:uppercase
+}
+.navigation-list{
+    list-style: none;
+    margin :0;
+}
+.navigation-list li {
+    display: inline-block;
+    margin-left: 40px;
+}
+.display-flex{
+    display: flex;
+    align-items: center;
+}
+.display-flex p{
+    margin:0
+}
+
+.chat-message-block {
+    border-radius: 15px;
+    margin: 10px;
+    padding: 10px;
+    width:50%;
+    border: 1px solid #D7CDCD;
+    
+  }
+  .chat-message-from{
+    float:left
+  }
+  .chat-message-to{
+    background: rgb(240, 96, 96);
+    color:white;
+    float:right
+  }
+  .chat-history {
+    min-height: 500px;
+    max-height: 500pxpx;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+  }
+  .container {
+    margin-top: 10px;
+  }
+  textarea#message {
+    border-radius: 10px;
+    resize: none;
+  }
+  .chat-action {
+    display: flex;
+    flex-direction: column;
+  }
+  p.chat-timing,
+  .chat-message-content p {
+    margin: 10px;
+  }
+
+  p.chat-timing {
+    font-size: 9pt;
+  }
+
+  .border-top{
+      border-top:1px solid #EA5D5D;
+
+  }
+  .text-center{
+      text-align: center;;
+  }
+

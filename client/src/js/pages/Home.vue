@@ -55,7 +55,6 @@ export default {
                                 <router-link to="/user/list">Users</router-link>
                             </li>
                              <li v-if="loggedIn">
-                                <router-link to=""></router-link>
                                 <a href="#" v-on:click="doLogout()">Logout</a>
                             </li> 
                         </ul>

@@ -1,11 +1,12 @@
 <script>
 import chatBox from "../components/ChatBox.vue";
+import nav from "../components/Navigation.vue";
 import chatService from "../services/ChatService";
 import {mapGetters} from 'vuex';
 
 export default {
 
-    components:{ 'chat-box':chatBox },
+    components:{ 'chat-box':chatBox ,'navigation':nav},
     data: function(){
      return {
         pageTitle : " "
@@ -65,9 +66,17 @@ export default {
     <div class="contents">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    <h1 class="page-title">{{pageTitle}}</h1>
-                    <button v-on:click='goBack()'>Back</button>
+                <div class="col-md-6 center-alignment">
+                    <navigation></navigation>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-6 center-alignment">
+                    <h1 class="text-color-red border-top text-center">{{this.$route.params.username}}</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 center-alignment">
                     <chat-box :chat-history="chatHistory" v-on:chat='chatListener' />
                 </div>
             </div>

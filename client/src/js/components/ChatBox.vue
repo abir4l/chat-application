@@ -58,7 +58,7 @@
 </script>
 
 <template>
-  <div class="container">
+  <div class="chat-wrapper" style="padding: 5px 0 0 0;">
     <div class="chat-history">
       <div class="chat-contents">
         <div class="chat-message-block" v-bind:class="[{ 'chat-message-from': chat.type === 'from'},{'chat-message-to' : chat.type === 'to' }]" v-for="chat in chatHistory" v-bind:key="chat._id">
@@ -87,45 +87,6 @@
 </template>
 
 <style scoped lang="css">
-  .chat-message-block {
-    border-radius: 4px;
-    margin: 10px;
-    padding: 10px;
-    width:50%
-  }
-  .chat-message-from{
-    /* background: #ccc; */
-    float:left
-  }
-  .chat-message-to{
-    /* background: rgb(240, 96, 96); */
-    float:right
-  }
-  .chat-history {
-    min-height: 500px;
-    max-height: 500pxpx;
-    overflow-y: scroll;
-    margin-bottom: 10px;
-    /* border: 3px solid #ccc; */
-  }
-  .container {
-    margin-top: 10px;
-  }
-  textarea#message {
-    /* border-radius: 10px; */
-    resize: none;
-  }
-  .chat-action {
-    display: flex;
-    flex-direction: column;
-  }
-  p.chat-timing,
-  .chat-message-content p {
-    margin: 10px;
-  }
-
-  p.chat-timing {
-    font-size: 9pt;
-  }
+  
 
 </style>

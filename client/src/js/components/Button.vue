@@ -22,7 +22,7 @@ export default {
 </script>
 
 <template>
-  <button :disabled='showLoading' v-on:click="clicked" class="_button" type="button">
+  <button :disabled='showLoading' v-on:click="clicked" class="btn btn-primary-custom" type="button">
     <slot v-if="!showLoading"></slot>
     <span v-if="showLoading"> <i class="fa fa-circle-o-notch fa-spin"></i></span>
   </button>

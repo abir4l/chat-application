@@ -54,5 +54,6 @@ console.log(`server running on port ${process.env.NODE_PORT}`);
 nodeServer.listen(process.env.NODE_PORT,'0.0.0.0', async () => {
 	let connection = MongoClient.connect("mongodb://db/");
 	global.constants.mongoConnection = await connection;
+	// global.constants.mongoConnection = await connection;
 });
 

@@ -17,7 +17,7 @@ defaults.allowedTags = defaults.allowedTags.filter((t) => {
 
 Vue.use(sanitize,defaults);
 Vue.prototype.$http = axiosInstance;
-const socketIo = io(config.url(''));
+// const socketIo = io(config.url(''));
 
 
 // socketIo.on("logout",(data) =>{

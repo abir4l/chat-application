@@ -4,6 +4,11 @@ const common = require('../lib/common');
 const axios = require('axios');
 const qs = require('qs');
 /**
+ *  TODO: make services for controllers
+ */
+
+
+/**
 * @param req
 * @param res
 */
@@ -151,7 +156,7 @@ exports.getAccessToken = function(req,res){
             * with this the user should be logging out in 24 hours
             * */
 
-            const accessToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
+            const accessToken = jwt.sign({'email':user.email,'name':user.name,'username':user.username }, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
             res.json({accessToken});
         }
     });
