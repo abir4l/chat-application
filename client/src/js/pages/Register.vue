@@ -68,8 +68,10 @@ export default {
         </div>
       </div>
       <div class="row mt-5">
-        
         <div class="register-wrapper">
+          <div class="form-group">
+            <h3 class="custom-title">User Registration</h3>
+          </div>
           <div class="form-group" v-if="errors.length">
             <div class="alert alert-danger">
                 Please correct the following error(s):
@@ -78,33 +80,28 @@ export default {
                 </ul>
             </div>
           </div>
-          <div class="form-group">
-            <h3 class="custom-title">User Registration</h3>
+          <div class="form-group mt-4">
+              <input class="form-control form-input" v-model="user.name" type="text" placeholder="Name">
           </div>
-          
-        <div class="form-group mt-4">
-            <input class="form-control form-input" v-model="user.name" type="text" placeholder="Name">
-        </div>
-        <div class="form-group mt-4">
-            <input type="text" v-model="user.email" class="form-control form-input" placeholder="Email" />
-        </div>
-        <div class="form-group mt-4">
-            <input class="form-control form-input" v-model="user.username" type="text" placeholder="Username">
-        </div>
-        <div class="form-group mt-4">
-            <input type="password" v-model="user.password" class="form-control form-input" placeholder="Password" />
-        </div>
-        <div class="form-group mt-4">
-            <Captcha @validate="validate"/>
-        </div>
-        <div class="form-group">
-            <button class="btn-block btn btn-primary-custom" v-on:click="register()" type="button">
-                Register
-            </button>
-        </div>
-        <div class="form-group mt-4">
-            <span class="text-color-grey">Already have account?</span> <router-link to="/login" class="text-color-red"><span>Login here.</span></router-link>
-             
+          <div class="form-group mt-4">
+              <input type="text" v-model="user.email" class="form-control form-input" placeholder="Email" />
+          </div>
+          <div class="form-group mt-4">
+              <input class="form-control form-input" v-model="user.username" type="text" placeholder="Username">
+          </div>
+          <div class="form-group mt-4">
+              <input type="password" v-model="user.password" class="form-control form-input" placeholder="Password" />
+          </div>
+          <div class="form-group mt-4">
+              <Captcha @validate="validate"/>
+          </div>
+          <div class="form-group">
+              <button class="btn-block btn btn-primary-custom" v-on:click="register()" type="button">
+                  Register
+              </button>
+          </div>
+          <div class="form-group mt-4">
+              <span class="text-color-grey">Already have account?</span> <router-link to="/login" class="text-color-red"><span>Login here.</span></router-link>
           </div>  
         </div>
       </div>

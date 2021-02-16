@@ -1,5 +1,5 @@
 <template>
-     <VueRecaptcha :sitekey="this.sitekey" :loadRecaptchaScript="true" @verify="validate"/>
+     <VueRecaptcha ref="recaptcha" :sitekey="this.sitekey" :loadRecaptchaScript="true" @verify="validate"/>
  </template>
  <script>
 import VueRecaptcha from 'vue-recaptcha'

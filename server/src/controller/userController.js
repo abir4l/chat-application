@@ -20,6 +20,7 @@ exports.login = async function (req, res) {
         res.status(404).json({
             message: "User not found"
         });
+        return;
     }
 
     bcrypt.compare(password, user.password, (err, result) => {

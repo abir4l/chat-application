@@ -1,12 +1,16 @@
 <script>
 import loginService from '../services/LoginService';
 import {mapActions} from 'vuex';
+import Captcha from '../components/Captcha.vue'
+
 export default {
+  components: {Captcha},
   data: function () {
     return {
         email:'',
-        password:''
-
+        password:'',
+        errors: [],
+        validateRecaptcha: false
     };
   },
   methods: {
@@ -15,18 +19,43 @@ export default {
           'storeToken',
           'login'
       ]),
-    doLogin:async function(){
-        let user = await loginService.login({
-            email:this.email,
-            password:this.password
-        });
-        if(user){
-            this.$store.dispatch("login",user).then(  () =>{
-                this.$router.push('detail');
-            });
-            
+      doLogin:async function(){
+        this.errors = [];
+
+        if (!this.email) {
+            this.errors.push("Email is required");
         }
-          
+        if (!this.password) {
+            this.errors.push("Password is required");
+        }
+        if (!this.validateRecaptcha) {
+            this.errors.push("Captcha is required");
+        }
+
+        if (this.errors.length) {
+            return;
+        }
+
+        try {
+          let user = await loginService.login({
+              email:this.email,
+              password:this.password
+          });
+
+          if(user){
+              this.$store.dispatch("login",user).then(  () =>{
+                  this.$router.push('detail');
+              });   
+          } else {
+            this.errors.push("Invalid Login!");
+            this.resetCaptcha();
+            return;
+          }
+        } catch (err) {
+          this.errors.push("Invalid Login!");
+          this.resetCaptcha();
+          return;
+        }
     },
     userPage() {
       this.$router.push("/user");
@@ -34,6 +63,13 @@ export default {
     goToHomePage: function () {
       this.$router.push("/");
     },
+    validate: function (success) {
+      this.validateRecaptcha = success
+    },
+    resetCaptcha: function() {
+      this.$refs.recaptcha.$refs.recaptcha.reset();
+      this.validateRecaptcha = false;
+    }
   },
 };
 </script>
@@ -50,15 +86,26 @@ export default {
         </div>
       </div>
       <div class="row mt-5">
-        <div class="login-wrapper col-md-4">
+        <div class="login-wrapper">
           <div class="form-group">
             <h3 class="custom-title">User login</h3>
+          </div>
+          <div class="form-group" v-if="errors.length">
+            <div class="alert alert-danger">
+                Please correct the following error(s):
+                <ul>
+                <li v-for="error in errors">{{ error }}</li>
+                </ul>
+            </div>
           </div>
           <div class="form-group mt-5">
             <input type="text" autocomplete="false" v-model="email" class="form-control form-input" placeholder="Email" />
           </div>
           <div class="form-group mt-3">
             <input type="password" autocomplete="false" v-model="password" class="form-control form-input" placeholder="Password" />
+          </div>
+          <div class="form-group mt-4">
+              <Captcha ref="recaptcha" @validate="validate"/>
           </div>
           <div class="login-controls mt-4">
             <div class="form-check">
