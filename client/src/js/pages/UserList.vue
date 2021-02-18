@@ -1,7 +1,7 @@
 <script>
   import UserService from '../services/UserService.js';
-  import ChatService from '../services/ChatService.js';
   import nav from '../components/Navigation.vue';
+  import {mapGetters,mapActions} from 'vuex';
   export default {
     components:{'navigation':nav},
    data: () => {
@@ -10,28 +10,31 @@
     }
   },
   methods: {
-
+    ...mapActions([
+        'loadUserList'
+    ]),
       goToHomePage:function(){
           this.$router.push("/");
       },
-      getUserList:async function(){
-        let response = await UserService.getUserlist();
-        let username = this.$store.getters.getUserState.username;
-        this.userList = response.data.filter(d => d["email"] && d["username"] !== username);
-      },
       chatWithUser:function(username){
 
-        // ChatService.chatHandshake(username,localStorage.getItem("username"));
         this.$store.dispatch("setUpChat",{username});
-
         this.$router.push('/user/chat/'+username);
       
 
       }
 
   },
+  computed:{
+    ...mapGetters(
+    {
+        userList: 'getUserList',
+    }),
+  },
   mounted:function(){
-      this.getUserList();
+      // this.getUserList();
+      this.loadUserList();
+
   }
 }
 </script>
@@ -64,9 +67,7 @@
                   <button class="btn btn-primary-custom" v-on:click="chatWithUser(user.username)">Chat</button>
               </div>
             </div>
-              <!-- <p>{{user.name}} <small>{{user.email}}</small>
-              
-            </p> -->
+             
                 
               
 

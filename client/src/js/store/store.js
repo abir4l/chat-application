@@ -23,7 +23,11 @@ const store = new Vuex.Store({
             reciever:{},
             chatHistory:[]
         },
-        socketData:{}
+        chatMessages:[
+
+        ],
+        socketData:{},
+        userList:[]
 
     },
     getters: {
@@ -50,6 +54,9 @@ const store = new Vuex.Store({
         },
         getChatHistory:function(state){
             return state.chatStore.chatHistory;
+        },
+        getUserList:function(state){
+            return state.userList;
         }
 
     },
@@ -100,6 +107,11 @@ const store = new Vuex.Store({
         },
         doAddSocket(state,data){
             state.socketData.id = data;
+        },
+        doLoadUserList(state,data){
+            let response = await UserService.getUserlist();
+            let username = state.userState.username;
+            state.userList = response.data.filter(d => d["email"] && d["username"] !== username);
         }
         
 
@@ -128,6 +140,9 @@ const store = new Vuex.Store({
         },
         addSocketData:function({commit},data){
             commit('doAddSocket',data);
+        },
+        loadUserList({commit}){
+            commit('doLoadUserList')
         }
                
     }

@@ -43,7 +43,7 @@ export default {
           });
 
           if(user){
-              this.$store.dispatch("login",user).then(  () =>{
+              this.login("login",user).then(  () =>{
                   this.$router.push('detail');
               });   
           } else {
