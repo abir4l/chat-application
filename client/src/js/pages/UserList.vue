@@ -6,7 +6,7 @@
     components:{'navigation':nav},
    data: () => {
     return {
-      userList : []
+      // userList : []
     }
   },
   methods: {
