@@ -234,7 +234,7 @@ exports.sendMessage = async (req,res) => {
                     sender:reciever,
                     reciever:sender
                 }
-        ]}).sort({timestamp : -1}).limit(5)
+        ]}).sort({timestamp : -1})
            .toArray((er,response)=>{
                 //send it back to both the sender and reciever, in order to reload all the tabs
                 global.constants.socketHandler.of(reciever).emit("message",response);
@@ -260,8 +260,7 @@ exports.loadMessage = async(req,res) => {
             }
     ]}
     ).
-    sort({timestamp : -1})
-    .limit(5).toArray();
+    sort({timestamp : -1}).toArray();
     res.json(messages);
 
 }

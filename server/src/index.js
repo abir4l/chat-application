@@ -14,14 +14,6 @@ var corsOptions = {
 
 
 
-//data base connection
-// const mongoose = require('mongoose');
-// const mongoDB = `mongodb://db/${process.env.DATABASE}`;
-// mongoose.connect(mongoDB, { useUnifiedTopology: true,useNewUrlParser:true });
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-
 
 const app = ex();
 app.use(require('body-parser').json());

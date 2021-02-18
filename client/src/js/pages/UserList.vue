@@ -5,9 +5,7 @@
   export default {
     components:{'navigation':nav},
    data: () => {
-    return {
-      // userList : []
-    }
+   
   },
   methods: {
     ...mapActions([

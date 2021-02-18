@@ -9,7 +9,6 @@ let refreshToken = localStorage.getItem('refresh_token');
 let username = localStorage.getItem('username');
 const store = new Vuex.Store({
     state: {
-        
         userState: {
             loggedIn: !tokenExpired(),
             accessToken: accessToken ? accessToken : '',
