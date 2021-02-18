@@ -108,7 +108,7 @@ const store = new Vuex.Store({
         doAddSocket(state,data){
             state.socketData.id = data;
         },
-        doLoadUserList(state,data){
+        async doLoadUserList(state,data){
             let response = await UserService.getUserlist();
             let username = state.userState.username;
             state.userList = response.data.filter(d => d["email"] && d["username"] !== username);
