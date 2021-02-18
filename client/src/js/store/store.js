@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
 import {tokenExpired} from '../lib/common';
+import UserService from '../services/UserService.js';
 
 Vue.use(Vuex);
 let accessToken = localStorage.getItem('access_token');

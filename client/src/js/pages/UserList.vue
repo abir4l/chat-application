@@ -1,5 +1,5 @@
 <script>
-  import UserService from '../services/UserService.js';
+  
   import nav from '../components/Navigation.vue';
   import {mapGetters,mapActions} from 'vuex';
   export default {
