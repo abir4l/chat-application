@@ -5,7 +5,9 @@
   export default {
     components:{'navigation':nav},
    data: () => {
-   
+   return {
+     
+   }
   },
   methods: {
     ...mapActions([
@@ -18,8 +20,6 @@
 
         this.$store.dispatch("setUpChat",{username});
         this.$router.push('/user/chat/'+username);
-      
-
       }
 
   },
@@ -50,8 +50,6 @@
       <div class="row mt-5">
         <div class="users-wrapper col-md-6">
 
-            
-              
               <div class="detail-contents mt-3" v-for="user in userList" :key="user._id">
                 <div class="display-flex">
                   <div class="user-profile-pic user-profile-pic-sm">
