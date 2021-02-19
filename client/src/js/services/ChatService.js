@@ -30,6 +30,7 @@ export default{
 				console.log('testing data',data);
 			});
              this.ownSocket.on('message', (data) =>{
+				store.dispatch("addChatMessages",data)
                 store.dispatch('loadChat',data);
 			 });
 			 let binded = this.disconnected.bind(this);

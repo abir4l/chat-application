@@ -23,9 +23,7 @@ const store = new Vuex.Store({
             reciever:{},
             chatHistory:[]
         },
-        chatMessages:[
-
-        ],
+        chatMessages:[],
         socketData:{},
         userList:[]
 
@@ -78,7 +76,6 @@ const store = new Vuex.Store({
             state.userState.accessToken = userInfo.accessToken;
             state.userState.refreshToken = userInfo.refreshToken;
             state.userState.username = userInfo.username;
-
         },
         logServerCall(state,data){
             state.serverData.message = data;
@@ -108,6 +105,9 @@ const store = new Vuex.Store({
         doAddSocket(state,data){
             state.socketData.id = data;
         },
+        doChatNew(state,data){
+                // todo need to have username to add to chatmessage
+        },
         async doLoadUserList(state,data){
             let response = await UserService.getUserlist();
             let username = state.userState.username;
@@ -136,11 +136,15 @@ const store = new Vuex.Store({
             commit('doChat',data);  
         },
         loadChat:function({commit},data){
+            commit("doChatNew",data)
+        },
+        loadChat:function({commit},data){
             commit('doLoadChat',data);
         },
         addSocketData:function({commit},data){
             commit('doAddSocket',data);
         },
+
         loadUserList({commit}){
             commit('doLoadUserList')
         }

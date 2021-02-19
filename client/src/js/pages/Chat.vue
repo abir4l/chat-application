@@ -1,12 +1,13 @@
 <script>
 import chatBox from "../components/ChatBox.vue";
+import users from "../components/Users.vue"
 import nav from "../components/Navigation.vue";
 import chatService from "../services/ChatService";
 import {mapGetters} from 'vuex';
 
 export default {
 
-    components:{ 'chat-box':chatBox ,'navigation':nav},
+    components:{ 'chat-box':chatBox ,'navigation':nav, users:users},
     data: function(){
      return {
         pageTitle : " "
@@ -71,14 +72,16 @@ export default {
                 </div>
             </div>
             <div class="row mt-5">
-                <div class="col-md-6 center-alignment">
+                <div class="col-md-4">
+                     <users></users>
+                </div>
+                <div class="col-md-8">
                     <h1 class="text-color-red border-top text-center">{{this.$route.params.username}}</h1>
+                    <chat-box :chat-history="chatHistory" v-on:chat='chatListener' />
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6 center-alignment">
-                    <chat-box :chat-history="chatHistory" v-on:chat='chatListener' />
-                </div>
+                 
             </div>
         </div>
         

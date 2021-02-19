@@ -1,6 +1,6 @@
 <script>
   import xbutton from "./Button.vue";
-  import {mapGetters} from 'vuex';
+  import {mapActions} from 'vuex';
   import moment from 'moment';
   export default {
     name: "chat-box",
@@ -19,6 +19,7 @@
     },
 
     methods: {
+      ...mapActions(["loadUserList"]),
       moment: function (date) {
         return moment(date);
       },
@@ -52,6 +53,10 @@
       chatMessage: "",
       sendingChat: false, //loading button for sending chat
     };
+  },
+  mounted: function () {
+    // this.getUserList();
+    this.loadUserList();
   },
 
 };
@@ -87,6 +92,9 @@
 </template>
 
 <style scoped lang="css">
-  
+  .chat-contents{
+    height: 600px;
+    overflow-y: scroll;
+  }
 
 </style>
