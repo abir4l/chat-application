@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import api from '../lib/authApi';
 import config from '../config.js';
-import store from '../store/store'
+import store from '../store/store';
 export default{
 	ownSocket:null,
 	username:'',
@@ -18,7 +18,6 @@ export default{
 				console.log(error);
 			});
 		}
-		
 	},
 	async chatHandshake(username){
 		this.api = api;
@@ -29,36 +28,26 @@ export default{
 			this.ownSocket.on("testingsocket",(data)=>{
 				console.log('testing data',data);
 			});
-             this.ownSocket.on('message', (data) =>{
+            this.ownSocket.on('message', (data) =>{
 				store.dispatch("addChatMessages",data)
                 store.dispatch('loadChat',data);
-			 });
-			 let binded = this.disconnected.bind(this);
-			 this.ownSocket.on('disconnect',binded);
-			 store.dispatch("addSocketData",this.ownSocket.id);
-			 window.mysocket = this.ownSocket;
+			});
+			let binded = this.disconnected.bind(this);
+			this.ownSocket.on('disconnect',binded);
+			store.dispatch("addSocketData",this.ownSocket.id);
+			window.mysocket = this.ownSocket;
 		}
-
 	},
-
 	loadMessages:async(reciever,username)=>{
-		
 		let chatInfo= {reciever:reciever,sender:username};
 		let response = await api.post(config.url("user/chat/load-message"),chatInfo);
-		return response.data;
-		
+		return response.data;	
 	},
-
 	sendMessage: async (chatInfo)=> {
 		let response = await api.post(config.url("user/chat/send-message"),chatInfo);
 		return  response.data;
-
-	}
-
-	
-
-	
-
-
-
+	}, 
+	metaMessage: async (data)=> {
+		await api.post(config.url("user/chat/meta-message"),data);
+	}, 
 }

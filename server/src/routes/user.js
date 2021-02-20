@@ -17,6 +17,7 @@ router.post('/register',userController.register);
 router.post('/recaptcha/validate',userController.recaptcha);
 protectedRouter.post('/chat/handshake',userController.setupChatSocket);
 protectedRouter.post('/chat/send-message',userController.sendMessage);
+protectedRouter.post('/chat/meta-message',userController.metaMessage);
 protectedRouter.post('/chat/load-message',userController.loadMessage);
 refreshTokenRoute.post('/access-token',userController.getAccessToken);
 protectedRouter.post('/logout',userController.logout);

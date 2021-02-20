@@ -21,7 +21,7 @@ const store = new Vuex.Store({
         },
         chatStore:{
             reciever:{},
-            chatHistory:[]
+            chatHistory:[],
         },
         chatMessages:[],
         socketData:{},
@@ -56,7 +56,6 @@ const store = new Vuex.Store({
         getUserList:function(state){
             return state.userList;
         }
-
     },
     mutations: {
         doLogout(state) {
@@ -89,15 +88,15 @@ const store = new Vuex.Store({
         doLoadChat(state,data){
             console.log('loading chat history data ');
             data = data.map(
-                d =>{
+                d => {
                     let currentUsername = state.userState.username;
+                    d['message_type'] = d.type;
                     if(d.sender == currentUsername)
                         d['type'] = 'from';
                     else
                         d['type'] = 'to';
-                    
-                        return d;
 
+                    return d;
                 }
             ).reverse();
             state.chatStore.chatHistory = data;
@@ -113,7 +112,6 @@ const store = new Vuex.Store({
             let username = state.userState.username;
             state.userList = response.data.filter(d => d["email"] && d["username"] !== username);
         }
-        
 
 
     },
@@ -148,7 +146,6 @@ const store = new Vuex.Store({
         loadUserList({commit}){
             commit('doLoadUserList')
         }
-               
     }
 });
 
