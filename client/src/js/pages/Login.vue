@@ -79,12 +79,6 @@ export default {
 <!-- TODO: remove login controls from login page -->
   <div class="contents">
     <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <h1></h1>
-          <button v-on:click="goToHomePage()">Home</button>
-        </div>
-      </div>
       <div class="row mt-5">
         <div class="login-wrapper">
           <div class="form-group">

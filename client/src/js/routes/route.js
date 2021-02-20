@@ -14,7 +14,7 @@ import Vue from "vue";
 
 Vue.use(VueRouter);
 const routes = [
-    {path:'/', component: homepage },
+    {path:'/', component: loginpage },
     {path:'/login', component: loginpage},
     {path:'/user/chat/:username', component: userPage},
     {path:'/user/list', component: userListPage },

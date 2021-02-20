@@ -238,6 +238,11 @@ exports.sendMessage = async (req,res) => {
            .toArray((er,response)=>{
                 //send it back to both the sender and reciever, in order to reload all the tabs
                 global.constants.socketHandler.of(reciever).emit("message",response);
+                
+                global.constants.socketHandler.of(reciever).emit("new-message",{data:response,reciever:sender});
+                global.constants.socketHandler.of(sender).emit("new-message",{data:response,reciever:reciever});
+
+                global.constants.socketHandler.of(reciever).emit("message",response);
                 global.constants.socketHandler.of(sender).emit("message",response);
             });
     res.json({message:"success"});

@@ -12,9 +12,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters({
-      userList: "getUserList",
-    }),
+   userList:function(){
+      let userName =console.log(this.$store.getters.getUserState.username);
+      let users = this.$store.getters.getUserList;
+      return users.filter(u => u.username !== userName );
+    }
   },
 };
 </script>

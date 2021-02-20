@@ -1,7 +1,7 @@
 <script>
 import nav from "../components/Navigation.vue";
 import users from "../components/Users.vue";
-import { mapGetters, mapActions } from "vuex";
+import { mapActions } from "vuex";
 export default {
   components: { navigation: nav, users: users },
   data: () => {
@@ -17,13 +17,7 @@ export default {
       this.$router.push("/user/chat/" + username);
     }
   },
-  computed: {
-    ...mapGetters({
-      userList: "getUserList",
-    }),
-  },
   mounted: function () {
-    // this.getUserList();
     this.loadUserList();
   },
 };
