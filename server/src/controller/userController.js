@@ -266,7 +266,7 @@ exports.loadMessage = async(req,res) => {
     ]}
     ).
     sort({timestamp : -1}).toArray();
-    res.json(messages);
+    res.json({data:messages,reciever:reciever});
 
 }
 

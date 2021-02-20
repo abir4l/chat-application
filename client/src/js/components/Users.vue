@@ -13,7 +13,7 @@ export default {
   },
   computed: {
    userList:function(){
-      let userName =console.log(this.$store.getters.getUserState.username);
+      let userName =this.$store.getters.getUserState.username;
       let users = this.$store.getters.getUserList;
       return users.filter(u => u.username !== userName );
     }

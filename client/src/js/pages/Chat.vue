@@ -11,12 +11,6 @@ export default {
     data: function(){
      return {
         pageTitle : " ",
-        // messages:[
-        //     {
-        //         "reciever": "username",
-        //         "history": []
-        //     }
-        // ]
      };
     },
     computed:{
@@ -24,12 +18,10 @@ export default {
         {
             chatStore: 'getChatStore',
             userData: 'getUserState',
-            chatHistory: 'getChatHistory',
                    
         }),
         messages:function(){
             let messages = this.$store.getters.getChatMessages.find(m => m.reciever === this.$route.params.username )
-            console.log(messages);
             let history = messages ? messages.data :[];
             return history;
         }
@@ -70,7 +62,7 @@ export default {
         let reciever = this.$route.params.username;
         chatService.chatHandshake(this.userData.username);
         let data = await chatService.loadMessages(reciever,this.userData.username);
-        this.$store.dispatch("loadChat",data);
+        this.$store.dispatch("addChatMessages",data);
     }
 
 }
