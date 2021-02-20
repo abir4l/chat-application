@@ -19,9 +19,15 @@ const store = new Vuex.Store({
         serverData: {
             message: ''
         },
+<<<<<<< HEAD
         chatStore: {
             reciever: {},
             chatHistory: []
+=======
+        chatStore:{
+            reciever:{},
+            chatHistory:[],
+>>>>>>> fb75ee3e2d303319f9e83c499cd2c446d36aa4a6
         },
         chatMessages: [],
         socketData: {},
@@ -59,7 +65,6 @@ const store = new Vuex.Store({
         getUserList: function (state) {
             return state.userList;
         }
-
     },
     mutations: {
         doLogout(state) {
@@ -98,9 +103,13 @@ const store = new Vuex.Store({
                         d['type'] = 'from';
                     else
                         d['type'] = 'to';
-
                     return d;
-
+                    d['message_type'] = d.type;
+                    if(d.sender == currentUsername)
+                        d['type'] = 'from';
+                    else
+                        d['type'] = 'to';
+                    return d;
                 }
             ).reverse();
             state.chatStore.chatHistory = data;
@@ -163,7 +172,6 @@ const store = new Vuex.Store({
         loadUserList({ commit }) {
             commit('doLoadUserList')
         }
-
     }
 });
 

@@ -216,12 +216,20 @@ exports.logout = function(req,res){
 
 
 exports.sendMessage = async (req,res) => {
-    
-    const {sender,reciever,message} = req.body;
-    let data = {sender,reciever,message};
+    // Here type is used to differentiate between message type
+    // type = 1 -> text message 
+    // type = 2 -> video call 
+    const {sender,reciever,message, type} = req.body;
+
+    // if client is using old API version
+    if (typeof type == 'undefined') {
+        type = 1;
+    }
+
+    let data = {sender,reciever,message,type};
     
     await global.constants.database("chatHistory")
-            .insertOne({... data,timestamp:new Date()});
+            .insertOne({... data,timestamp:new Date(), type: type});
     
     global.constants.database("chatHistory")
             .find(
@@ -246,9 +254,13 @@ exports.sendMessage = async (req,res) => {
                 global.constants.socketHandler.of(sender).emit("message",response);
             });
     res.json({message:"success"});
-
 }
 
+exports.metaMessage = async (req,res) => {
+    const {sender,reciever,message} = req.body;
+    global.constants.socketHandler.of(reciever).emit("meta-message",message);
+    res.json({ success: true });
+}
 
 exports.loadMessage = async(req,res) => {
     const {sender,reciever} = req.body;
