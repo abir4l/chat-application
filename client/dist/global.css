@@ -140,6 +140,9 @@ a.text-color-red:hover{
     border-radius: 10px;
     resize: none;
   }
+  textarea#message:focus,  textarea#message:active  {
+    outline: none;
+  }
   .chat-action {
     display: flex;
     flex-direction: column;

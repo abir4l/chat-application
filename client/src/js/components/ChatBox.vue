@@ -40,11 +40,12 @@
         this.$emit("chat",this.chatMessage,(done)=>{
             this.chatMessage = "";
             this.sendingChat = false;
-            this.$refs["chat-box"].focus();    
-
+            this.$refs["chat-box"].focus();
         });
-     
     },
+    videoCall: function () {
+      this.$emit("video");
+    }
   },
   
   data: function () {
@@ -63,8 +64,8 @@
       <div class="chat-contents">
         <div class="chat-message-block" v-bind:class="[{ 'chat-message-from': chat.type === 'from'},{'chat-message-to' : chat.type === 'to' }]" v-for="chat in chatHistory" v-bind:key="chat._id">
           <div class="sender-info"></div>
-          <div class="chat-message-content">
-            <p v-html="escapedMessage(chat.message)"></p>
+          <div class="chat-message-content">            
+            <p><i class="fa fa-video-camera" v-if="chat.message_type == '2'"></i> <span v-html="escapedMessage(chat.message)"></span></p>
           </div>
           <p class="chat-timing">{{moment(chat.timestamp.toLocaleString()).format('YYYY-MM-DD HH:mm:ss')}}</p>
         </div>
@@ -81,7 +82,12 @@
       rows="5"
       v-on:keyup="enterPressed"
       ></textarea>
-      <xbutton @clicked="sendMessage()" :loading="sendingChat">Send</xbutton>
+      <div class="row">
+        <div class="col-md-12 d-flex">
+          <button v-on:click="videoCall()" class="btn btn-primary"><i class="fa fa-video-camera"></i></button>
+          <xbutton @clicked="sendMessage()" :loading="sendingChat" :class="'flex-grow-1'">Send</xbutton>
+        </div>
+      </div>
     </div>
   </div>
 </template>

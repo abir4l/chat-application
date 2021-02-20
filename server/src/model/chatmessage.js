@@ -8,7 +8,7 @@ const chatMessage = new Schema({
     message: { type: String, required: true },
     sender: { type: mixed,  required: true },
     reciever: { type: mixed, required: true },
-    
+    type: { type: Number, required: true }
 
 });
 
