@@ -19,15 +19,9 @@ const store = new Vuex.Store({
         serverData: {
             message: ''
         },
-<<<<<<< HEAD
         chatStore: {
             reciever: {},
             chatHistory: []
-=======
-        chatStore:{
-            reciever:{},
-            chatHistory:[],
->>>>>>> fb75ee3e2d303319f9e83c499cd2c446d36aa4a6
         },
         chatMessages: [],
         socketData: {},
