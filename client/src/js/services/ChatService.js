@@ -28,9 +28,7 @@ export default{
 			this.ownSocket.on("testingsocket",(data)=>{
 				console.log('testing data',data);
 			});
-             this.ownSocket.on('message', (data) =>{
-                store.dispatch('loadChat',data);
-			 });
+             
 
 			this.ownSocket.on('new-message',(data)=>{
 				store.dispatch("addChatMessages",data)
@@ -44,10 +42,6 @@ export default{
 				store.dispatch("addChatMessages",data)
                 store.dispatch('loadChat',data);
 			});
-			let binded = this.disconnected.bind(this);
-			this.ownSocket.on('disconnect',binded);
-			store.dispatch("addSocketData",this.ownSocket.id);
-			window.mysocket = this.ownSocket;
 		}
 	},
 	loadMessages:async(reciever,username)=>{

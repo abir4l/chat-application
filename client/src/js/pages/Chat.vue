@@ -13,6 +13,12 @@ export default {
     data: function(){
      return {
         pageTitle : " ",
+        isChannelReady: false,
+        showVideoScreen: false,
+        isStarted: false,
+        isInitiator:false,
+        localStream: null,
+        remoteStream: null,
      };
     },
     computed:{
@@ -282,18 +288,13 @@ export default {
                 </div>
                 <div class="col-md-8">
                     <h1 class="text-color-red border-top text-center">{{this.$route.params.username}}</h1>
-                    <chat-box :chat-history="messages" v-on:chat='chatListener' />
+                    <chat-box :chat-history="messages" v-on:chat='chatListener' v-on:video='videoListener' />
                 </div>
             </div>
             <div class="video-call-popup" v-show="showVideoScreen">    
                 <video ref="video" class="local" autoplay muted playsinline></video>
                 <video ref="remote" class="remote" autoplay muted playsinline></video>
                 <button class="hangup" v-on:click="hangup"><i class="fa fa-phone"></i></button>
-            </div>
-            <div class="row">
-                <div class="col-md-6 center-alignment">
-                    <chat-box ref="chat-box" :chat-history="chatHistory" v-on:chat='chatListener' v-on:video='videoListener'/>
-                </div>
             </div>
         </div>
     </div>
