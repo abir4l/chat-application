@@ -10,16 +10,16 @@ export default {
 			{
 				urls: [ "stun:ms-m1.xirsys.com" ]
 			}, 
-			{   
-				username: "UjFFTYZQecsUzy8yPz7m7uiBiA0R9Hp58S_ntJubsvAKmYD-VWQTLEQclOM0TKHuAAAAAGAtLW1iaW5vZHBhcml5YXI=",   
-				credential: "9bf327e8-712f-11eb-9bbe-0242ac140004",   
-				urls: [      
-					"turn:ms-m1.xirsys.com:80?transport=udp",      
-					"turn:ms-m1.xirsys.com:3478?transport=udp",      
-					"turn:ms-m1.xirsys.com:80?transport=tcp",      
-					"turn:ms-m1.xirsys.com:3478?transport=tcp",      
-					"turns:ms-m1.xirsys.com:443?transport=tcp",       
-					"turns:ms-m1.xirsys.com:5349?transport=tcp"   
+			{
+				username: "UjFFTYZQecsUzy8yPz7m7uiBiA0R9Hp58S_ntJubsvAKmYD-VWQTLEQclOM0TKHuAAAAAGAtLW1iaW5vZHBhcml5YXI=",
+				credential: "9bf327e8-712f-11eb-9bbe-0242ac140004",
+				urls: [
+					"turn:ms-m1.xirsys.com:80?transport=udp",
+					"turn:ms-m1.xirsys.com:3478?transport=udp",
+					"turn:ms-m1.xirsys.com:80?transport=tcp",
+					"turn:ms-m1.xirsys.com:3478?transport=tcp",
+					"turns:ms-m1.xirsys.com:443?transport=tcp",
+					"turns:ms-m1.xirsys.com:5349?transport=tcp"
 				]
 			}
 		]

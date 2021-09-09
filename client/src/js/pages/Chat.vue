@@ -5,19 +5,19 @@ import chatService from "../services/ChatService";
 import {mapGetters} from 'vuex';
 import config from '../config.js';
 import store from '../store/store';
+import Peer from 'peerjs';
 
 export default {
 
     components:{ 'chat-box':chatBox ,'navigation':nav},
-    data: function(){
+    data: function() {
      return {
         pageTitle : " ",
-        isChannelReady: false,
         showVideoScreen: false,
-        isStarted: false,
-        isInitiator:false,
-        localStream: null,
-        remoteStream: null,
+        myPeer: null,
+        myPeerId: '',
+        remotePeerId: '',
+        raf: null
      };
     },
     computed:{
@@ -28,12 +28,11 @@ export default {
             chatHistory: 'getChatHistory',
         })
     },
-    methods:{
-        
-        goBack: function(){
+    methods: {
+        goBack: function() {
             window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/');
         },
-        chatListener: async function(message,loaded){
+        chatListener: async function(message,loaded) {
             let reciever = this.$route.params.username;
             let sender = this.$store.getters.getUserState.username;
             await chatService.sendMessage({
@@ -49,23 +48,7 @@ export default {
             // this.$store.dispatch("loadChat",history.data);
             loaded(true);
         },
-        enableWebcams: async function() {
-            let self = this;
-            return new Promise((resolve) => {
-                navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-                .then((stream) => {
-                    self.localStream = stream;
-                    self.$refs.video.srcObject = stream;
-                    self.isChannelReady = true;
-                    resolve(true);
-                })
-                .catch(function(e) {
-                    console.log(e);
-                    alert('getUserMedia() error: ' + e.name);
-                });
-            });
-        },
-        videoListener: async function(){
+        videoListener: async function() {
             let reciever = this.$route.params.username;
             let sender = this.$store.getters.getUserState.username;
             let self = this;
@@ -75,135 +58,26 @@ export default {
                 message:"Video Call",
                 type: 2
             });
-
-            navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-            .then((stream) => {
-                console.log(self.$refs);
-                self.localStream = stream;
-                self.$refs.video.srcObject = stream;
-
-                let reciever = self.$route.params.username;
-                let sender = self.$store.getters.getUserState.username;
-
-                chatService.metaMessage({
-                    reciever:reciever,
-                    sender:sender,
-                    message: 'got user media'
-                }).then(function() {
-                    self.isChannelReady = true;
-                    self.showVideoScreen = true;
-                    self.isInitiator = true;
-                    self.createPeerConnection();
-                    self.pc.addStream(self.localStream);
-                    self.maybeStart();
-                });
-            })
-            .catch(function(e) {
-                console.log(e);
-                alert('getUserMedia() error: ' + e.name);
-            });
-
-        },
-        maybeStart: async function() {
-            if(this.localStream == null) {
-                await this.enableWebcams();
-            }
-            console.log('>>>>>>> maybeStart() ', this.isStarted, this.localStream, this.isChannelReady);
-            if (!this.isStarted && typeof this.localStream !== 'undefined' && this.isChannelReady) {
-                console.log('>>>>>> creating peer connection');
-                this.createPeerConnection();
-                this.pc.addStream(this.localStream);
-                this.isStarted = true;
-                console.log('isInitiator', this.isInitiator);
-                if (this.isInitiator) {
-                  this.doCall();
-                }
-            }
-        },
-        createPeerConnection: function () {
-            try {
-                this.pc = new RTCPeerConnection(config.turnConfig());
-                this.pc.onicecandidate = this.handleIceCandidate;
-                this.pc.onaddstream = this.handleRemoteStreamAdded;
-                this.pc.onremovestream = this.handleRemoteStreamRemoved;
-                console.log('Created RTCPeerConnnection');
-            } catch (e) {
-                console.log(e);
-                return;
-            }
-        }, 
-        handleIceCandidate: function(event) {
-            if (event.candidate) {
-                let reciever = this.$route.params.username;
-                let sender = this.$store.getters.getUserState.username;
-                chatService.metaMessage({
-                    reciever:reciever,
-                    sender:sender,
-                    message: {
-                        type: 'candidate',
-                        label: event.candidate.sdpMLineIndex,
-                        id: event.candidate.sdpMid,
-                        candidate: event.candidate.candidate
-                    }
-                });
-            }
-        },
-        handleRemoteStreamAdded: function(event) {
-            this.remoteStream = event.stream;
-            this.$refs.remote.srcObject = this.remoteStream;
-        },
-        handleRemoteStreamRemoved: function(event) {
-            console.log('Remote stream removed. Event: ', event);
-        },
-        doCall: function() {
-            // Sending offer to peer
-            this.pc.createOffer(this.setLocalAndSendMessage, this.handleCreateOfferError);
-        },
-        doAnswer: function() {
-            // Sending answer to peer
-            this.showVideoScreen = true;
-            this.pc.createAnswer().then(
-                this.setLocalAndSendMessage,
-                this.onCreateSessionDescriptionError,
-                this.answerCall
-            );
-        },
-        setLocalAndSendMessage: function(sessionDescription) {
-            this.pc.setLocalDescription(sessionDescription);
-            let reciever = this.$route.params.username;
-            let sender = this.$store.getters.getUserState.username;
             chatService.metaMessage({
                 reciever:reciever,
                 sender:sender,
-                message: sessionDescription
+                message: self.myPeer.id
+            }).then(function() {
+                console.log({
+                    reciever:reciever,
+                    sender:sender,
+                    message: self.myPeer.id
+                });
+                console.log('sent with id ' + self.myPeer.id);
             });
-        },
-        onCreateSessionDescriptionError: function(error) {
-            console.log('Failed to create session description: ' + error.toString());
-        },  
-        handleCreateOfferError: function (event) {
-          console.log('createOffer() error: ', event);
-        },
-        answerCall: function() {
-            this.showVideoScreen = true;
         },
         handleRemoteHangup: function() {
             // Session terminated
             this.stop();
-            this.isInitiator = false;
         },
         stop: function() {
-            this.isStarted = false;
             this.showVideoScreen = false;
-            if (this.pc != null) {
-                this.pc.close();
-                this.pc = null;
-            }
-            this.localStream.getTracks().forEach(function(track) {
-                if (track.readyState == 'live') {
-                    track.stop();
-                }
-            });
+            cancelAnimationFrame(this.raf);
         },
         hangup: function() {
             // Hanging up
@@ -215,7 +89,7 @@ export default {
                 sender:sender,
                 message: 'bye'
             });
-        }
+        },
     },
     beforeRouteLeave:function(to,from,next){
         if(from.path == "/user/chat"){
@@ -230,27 +104,23 @@ export default {
         this.$store.dispatch("loadChat",data);
         let self = this;
         window.mysocket.on("meta-message", (message) => {
-            console.log('Client received message:', message);
             if (message === 'got user media') {
-                self.maybeStart();
             } else if (message.type === 'offer') {
-                if (!self.isInitiator && !self.isStarted) {
-                    self.maybeStart();
-                }
-                self.pc.setRemoteDescription(new RTCSessionDescription(message));
-                self.doAnswer();
-            } else if (message.type === 'answer' && self.isStarted) {
-                self.pc.setRemoteDescription(new RTCSessionDescription(message));
-            } else if (message.type === 'candidate' && self.isStarted) {
-                if (self.pc != null) {
-                    var candidate = new RTCIceCandidate({
-                        sdpMLineIndex: message.label,
-                        candidate: message.candidate
-                    });
-                    self.pc.addIceCandidate(candidate);
-                }
-            } else if (message === 'bye' && self.isStarted) {
+            } else if (message.type === 'answer') {
+            } else if (message === 'bye') {
                 self.handleRemoteHangup();
+            } else {
+                console.log('maybe reciever peer id');
+                console.log(message);
+                self.remotePeerId = message;
+                self.connection = self.myPeer.connect(self.remotePeerId)
+                console.log('Now connected: ', self.connection)
+                self.connection.on('open', () => {
+                    self.connection.on('data', newMessage => {
+                        console.log(newMessage);
+                    });
+                    self.connection.send('videocall-ready|' + self.myPeer.id);
+                });
             }
         });
     },
@@ -259,6 +129,48 @@ export default {
         window.onbeforeunload = function() {
             // self.hangup();
         };
+        this.myPeer = new Peer()
+        this.myPeer.on('open', (id) => {
+            console.log('this.myPeer.id: ' + this.myPeer.id + ' this.myPeer.key: ' + this.myPeer.key)
+        })
+        // Receive messages
+        this.myPeer.on('connection', con => {
+            console.log("Receiving messages from peer")
+            this.connection = con
+            con.on('open', () => {
+                con.on('data', newMessage => {
+                    var parts = newMessage.split('|');
+                    if(parts[0] == 'videocall-ready') {
+                        var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                        getUserMedia({video: true, audio: true}, function(stream) {
+                            self.$refs.video.srcObject = stream;
+                            console.log("Video calling to " + parts[1]);
+                            var call = self.myPeer.call(parts[1], stream);
+                            call.on('stream', function(remoteStream) {
+                                self.showVideoScreen = true;
+                                self.$refs.remote.srcObject = remoteStream;
+                            });
+                        }, function(err) {
+                          console.log('Failed to get local stream' ,err);
+                        });
+                    }
+                })
+            })
+        });
+        var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        this.myPeer.on('call', call => {
+            console.log("Receiving video call from peer");
+            getUserMedia({video: true, audio: true}, function(stream) {
+            self.$refs.video.srcObject = stream;
+            call.answer(stream);
+            call.on('stream', function(remoteStream) {
+                self.showVideoScreen = true;
+                self.$refs.remote.srcObject = remoteStream;
+            });
+          }, function(err) {
+                console.log('Failed to get local stream' ,err);
+          });
+        });
     }
 }
 </script>

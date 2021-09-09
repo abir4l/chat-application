@@ -47,6 +47,6 @@ export default{
 		return  response.data;
 	}, 
 	metaMessage: async (data)=> {
-		await api.post(config.url("user/chat/meta-message"),data);
+		await api.post(config.url("user/chat/meta-message"), data);
 	}, 
 }
