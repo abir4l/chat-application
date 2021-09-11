@@ -12,27 +12,19 @@ var corsOptions = {
     optionsSuccessStatus: 200,
 };
 
-
-
-//data base connection
-// const mongoose = require('mongoose');
-// const mongoDB = `mongodb://db/${process.env.DATABASE}`;
-// mongoose.connect(mongoDB, { useUnifiedTopology: true,useNewUrlParser:true });
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-
-
 const app = ex();
 app.use(require('body-parser').json());
 app.use(cors());
 
-
 const nodeServer = httpServer.createServer(app);
 
-var whitelist = ['http://localhost:4545', 'http://localhost:8080','http://localhost:4545/','http://chat.abiralkhanal.com:8080/']
-
-
+var whitelist = [
+       'http://localhost:4545',
+       'http://localhost:8080',
+       'http://localhost:4545/',
+       'http://chat.abiralkhanal.com:8080/',
+       'http://172.105.187.91:8080/'
+];
 
 const socketIo = ioServer(nodeServer,{
 	cors: {
@@ -40,10 +32,6 @@ const socketIo = ioServer(nodeServer,{
 	    methods: ["GET", "POST"]
 	  }
 });
-
-
-
-
 
 // passing source path and sockethandler to constants
 global.constants = require(path.join(__dirname,'lib','constants'))(__dirname,socketIo); 

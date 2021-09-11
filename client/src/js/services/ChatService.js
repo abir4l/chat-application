@@ -23,7 +23,7 @@ export default{
 		this.api = api;
 		this.username = username;
 		let response = await api.post(config.url("user/chat/handshake"),{username})
-		if(response){
+		if (response) {
 			this.ownSocket = io.connect(config.url(username));
 			this.ownSocket.on("testingsocket",(data)=>{
 				console.log('testing data',data);

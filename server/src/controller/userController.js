@@ -191,18 +191,17 @@ exports.setupChatSocket = (req,res) => {
         .socketHandler.of(username)
         .on('connection', (socket) => {
             global.constants.userSockets
-            .push(
-                { 
+            .push({ 
                     username: username,
                     socketHandle: socket
-                } 
-                );
-            });
-        }
-        res.send({
-            message:"socket listening",
-            socketfound: userSocketHandler != undefined
-        });
+                });
+            }
+        );
+    }
+    res.send({
+        message:"socket listening",
+        socketfound: userSocketHandler != undefined
+    });
         
     }
     
