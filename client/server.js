@@ -16,14 +16,17 @@ const certificate = fs.readFileSync(process.env.CERT, 'utf8');
 const ca = fs.readFileSync(process.env.CA, 'utf8');
 
 const credentials = {
-        key: privateKey,
-        cert: certificate,
-        ca: ca
+    key: privateKey,
+    cert: certificate,
+    ca: ca
 };
 
-// app.use((req, res) => {
-//         res.send('Hello there !');
-// });
+app.use(function(request, response, next) {
+    if (process.env.APP_ENV != 'dev' && !request.secure) {
+        return response.redirect("https://" + request.headers.host + request.url);
+    }
+    next();
+})
 app.use(serveStatic(__dirname + "/dist"));
 
 app.use('/proxy', proxy(process.env.SERVER_URL));
@@ -34,9 +37,9 @@ const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(80, () => {
-        console.log('HTTP Server running on port 80');
+    console.log('HTTP Server running on port 80');
 });
 
 httpsServer.listen(443, () => {
-        console.log('HTTPS Server running on port 443');
+    console.log('HTTPS Server running on port 443');
 });

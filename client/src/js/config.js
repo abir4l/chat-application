@@ -1,14 +1,17 @@
 const serverUrl = process.env.SERVER_URL;
 const captchaSiteKey = process.env.CAPTCHA_SITEKEY;
 export default {
-    url: (path) => {
+    url: (path, removeProxy) => {
     	var url = serverUrl + path,
+        var removeProxy = (typeof removeProxy == 'undefined' ? false : removeProxy);
     	/** 
     	* This is done because in live, server is using reversed proxy 
     	* and /proxy is the entry point for the server
     	* we need to remove this in order to support for socket.io
     	*/
-    	url = url.replace('/proxy','');
+        if (removeProxy) {
+            url = url.replace('/proxy','');   
+        }
     	return url;
     },
     log: (message, tag, mode) => {
