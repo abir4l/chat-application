@@ -24,7 +24,7 @@ export default{
 		this.username = username;
 		let response = await api.post(config.url("user/chat/handshake"),{username})
 		if (response) {
-			this.ownSocket = io.connect(config.url(username, false));
+			this.ownSocket = io.connect(config.url(username, true));
 			this.ownSocket.on("testingsocket",(data)=>{
 				console.log('testing data',data);
 			});

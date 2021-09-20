@@ -22,15 +22,18 @@ const credentials = {
 };
 
 app.use(function(request, response, next) {
-    if (process.env.APP_ENV != 'dev' && !request.secure) {
+    if (
+        process.env.APP_ENV != 'dev'
+        && !request.secure
+    ) {
         return response.redirect("https://" + request.headers.host + request.url);
     }
     next();
-})
+});
 app.use(serveStatic(__dirname + "/dist"));
 
-app.use('/proxy', proxy(process.env.SERVER_URL));
-app.use(createProxyMiddleware('/socket.io', { target: process.env.SERVER_URL, ws: true }));
+app.use('/proxy', proxy(process.env.BACKEND_URL));
+app.use(createProxyMiddleware('/socket.io', { target: process.env.BACKEND_URL, ws: true }));
 
 // Starting both http & https servers
 const httpServer = http.createServer(app);
