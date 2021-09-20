@@ -2,7 +2,7 @@ const serverUrl = process.env.SERVER_URL;
 const captchaSiteKey = process.env.CAPTCHA_SITEKEY;
 export default {
     url: (path, removeProxy) => {
-    	var url = serverUrl + path,
+    	var url = serverUrl + path;
         var removeProxy = (typeof removeProxy == 'undefined' ? false : removeProxy);
     	/** 
     	* This is done because in live, server is using reversed proxy 
