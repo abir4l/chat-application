@@ -6,13 +6,14 @@ const express = require('express');
 const serveStatic = require('serve-static');
 const proxy = require('express-http-proxy');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const dotenv = require('dotenv').config({ path: '../.env' })
 
 const app = express();
 
 // Certificate
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/binodpariyar.com.np/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/binodpariyar.com.np/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/binodpariyar.com.np/chain.pem', 'utf8');
+const privateKey = fs.readFileSync(process.env.PRIVATE_KEY, 'utf8');
+const certificate = fs.readFileSync(process.env.CERT, 'utf8');
+const ca = fs.readFileSync(process.env.CA, 'utf8');
 
 const credentials = {
         key: privateKey,
@@ -25,8 +26,8 @@ const credentials = {
 // });
 app.use(serveStatic(__dirname + "/dist"));
 
-app.use('/proxy', proxy('http://172.105.187.91:8888/'));
-app.use(createProxyMiddleware('/socket.io', { target: 'http://172.105.187.91:8888/', ws: true }));
+app.use('/proxy', proxy(process.env.SERVER_URL));
+app.use(createProxyMiddleware('/socket.io', { target: process.env.SERVER_URL, ws: true }));
 
 // Starting both http & https servers
 const httpServer = http.createServer(app);

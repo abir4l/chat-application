@@ -1,31 +1,30 @@
-// const serverUrl = 'http://localhost:8888/';
-const serverUrl = 'http://127.0.0.1:8888/';
-// const serverUrl = "https://5f8e66ad6563.ngrok.io/";
-const captchaSiteKey = '6LdIYVUaAAAAAOlshMCsFYXjiScnojmNQXj1lMDt';
+const serverUrl = process.env.SERVER_URL;
+const captchaSiteKey = process.env.CAPTCHA_SITEKEY;
 export default {
     url: (path) => {
     	var url = serverUrl + path,
+    	/** 
+    	* This is done because in live, server is using reversed proxy 
+    	* and /proxy is the entry point for the server
+    	* we need to remove this in order to support for socket.io
+    	*/
     	url = url.replace('/proxy','');
     	return url;
     },
+    log: (message, tag, mode) => {
+        var tag = (typeof tag == 'undefined' ? 'log' : tag);
+        var mode = (typeof mode == 'undefined' ? 'dev' : mode);
+        if (mode == process.env.APP_ENV) {
+            if (typeof message == 'string') {
+                console.log("TAG: " + tag.toUpperCase() + ", " + "MESSAGE: " + message);    
+            } else {
+                console.log("TAG: " + tag.toUpperCase())
+                console.log(message);
+            }
+        }
+    },
+    appEnv: (env) => {
+        return process.env.APP_ENV == env;
+    },
     captchaSiteKey: () => captchaSiteKey,
-    turnConfig: () => {
-		iceServers: [
-			{
-				urls: [ "stun:ms-m1.xirsys.com" ]
-			}, 
-			{
-				username: "UjFFTYZQecsUzy8yPz7m7uiBiA0R9Hp58S_ntJubsvAKmYD-VWQTLEQclOM0TKHuAAAAAGAtLW1iaW5vZHBhcml5YXI=",
-				credential: "9bf327e8-712f-11eb-9bbe-0242ac140004",
-				urls: [
-					"turn:ms-m1.xirsys.com:80?transport=udp",
-					"turn:ms-m1.xirsys.com:3478?transport=udp",
-					"turn:ms-m1.xirsys.com:80?transport=tcp",
-					"turn:ms-m1.xirsys.com:3478?transport=tcp",
-					"turns:ms-m1.xirsys.com:443?transport=tcp",
-					"turns:ms-m1.xirsys.com:5349?transport=tcp"
-				]
-			}
-		]
-	}
 }

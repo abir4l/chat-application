@@ -1,11 +1,9 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-var MiniCssExtractPlugin = require('mini-css-extract-plugin')
-
-
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = {
-
     entry: './src/js/app.js',
     mode: 'development',
     output: {
@@ -14,7 +12,6 @@ module.exports = {
     },
     devtool: 'source-map',
     module: {
-
         rules: [
             {
                 test: /\.(woff|woff2)$/,
@@ -44,10 +41,12 @@ module.exports = {
     },
     resolve: { alias: { vue: 'vue/dist/vue.esm.js' } },
     plugins: [
+        new Dotenv({
+            path: '../.env',
+        }),
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
             filename: 'app.css'
         }),
-
     ]
 }

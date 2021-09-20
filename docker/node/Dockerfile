@@ -8,5 +8,5 @@ COPY server/src/package.json .
 
 RUN npm install
 
-CMD ["npm", "run","dev"]
+CMD ["npm", "run", "dev"]
 

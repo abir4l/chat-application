@@ -20,7 +20,7 @@ axiosInstance.interceptors.request.use(
             let refreshToken = store.getters.getRefreshToken;
             let refreshTokenObject = jwtDecode(refreshToken);
             if (new Date(refreshTokenObject.exp * 1000) > timeNow) {
-                console.log("fetching new token");
+                config.log("fetching new token");
                 let response = await Axios.post(config.url('user/access-token'), {}, {headers: {"Authorization": "Bearer " + refreshToken}});
                 localStorage.setItem('access_token', response.data.accessToken);
                 token = response.data.accessToken;

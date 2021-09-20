@@ -18,19 +18,16 @@ export const loginIfTokenExists = (refreshToken,accessToken,username) => {
 	let tokenExpired = refreshToken &&  new Date(refreshTokenObject.exp * 1000) < timeNow;
 	if(!tokenExpired){
 		if(!store.getters.getUserLoginStatus){
-			store.dispatch("login",{
-			accessToken: accessToken,
-			refreshToken:refreshToken,
-			username:username
-		});
-		return true;	
-	}else{
-		return true;
+			store.dispatch('login', {
+				accessToken: accessToken,
+				refreshToken:refreshToken,
+				username:username
+			});
+			return true;	
+		} else {
+			return true;
 		}
-		
 	}
-	store.dispatch("logout");
+	store.dispatch('logout');
 	return false;
-
 }
-

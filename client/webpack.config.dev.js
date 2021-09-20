@@ -1,10 +1,10 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-var MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 
 module.exports ={
-
     devtool:'source-map',
     entry: './src/js/app.js',
     mode:'development',
@@ -13,7 +13,6 @@ module.exports ={
         path:path.resolve(__dirname,'dist'),
     },
     module: {
-
         rules: [
             {
                 test: /\.vue$/,
@@ -43,6 +42,9 @@ module.exports ={
     },
     resolve: { alias: { vue: 'vue/dist/vue.esm.js' } },
     plugins: [
+        new Dotenv({
+            path: '../.env',
+        }),
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
                 filename:'app.css'
@@ -52,7 +54,6 @@ module.exports ={
                 template: 'dist/index.html',
                 inject: true
         })
-    
     ]
 }
 

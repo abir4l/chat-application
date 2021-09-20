@@ -1,7 +1,8 @@
 <script>
-import loginService from '../services/LoginService';
+import loginService from '../services/LoginService'
 import {mapActions} from 'vuex';
 import Captcha from '../components/Captcha.vue'
+import config from '../config.js'
 
 export default {
   components: {Captcha},
@@ -28,7 +29,7 @@ export default {
         if (!this.password) {
             this.errors.push("Password is required");
         }
-        if (!this.validateRecaptcha) {
+        if (!this.validateRecaptcha && config.appEnv('prod')) {
             this.errors.push("Captcha is required");
         }
 
@@ -69,6 +70,9 @@ export default {
     resetCaptcha: function() {
       this.$refs.recaptcha.$refs.recaptcha.reset();
       this.validateRecaptcha = false;
+    },
+    showRecaptcha: function() {
+      return config.appEnv('prod');
     }
   },
 };
@@ -104,7 +108,7 @@ export default {
           <div class="form-group mt-3">
             <input type="password" autocomplete="false" v-model="password" class="form-control form-input" placeholder="Password" />
           </div>
-          <div class="form-group mt-4">
+          <div class="form-group mt-4" v-show="showRecaptcha()">
               <Captcha ref="recaptcha" @validate="validate"/>
           </div>
           <div class="login-controls mt-4">

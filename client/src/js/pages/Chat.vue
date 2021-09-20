@@ -8,7 +8,6 @@ import store from '../store/store';
 import Peer from 'peerjs';
 
 export default {
-
     components:{ 'chat-box':chatBox ,'navigation':nav},
     data: function() {
      return {
@@ -17,7 +16,9 @@ export default {
         myPeer: null,
         myPeerId: '',
         remotePeerId: '',
-        raf: null
+        raf: null,
+        remoteMute: false,
+        videoMute: false
      };
     },
     computed:{
@@ -63,12 +64,12 @@ export default {
                 sender:sender,
                 message: self.myPeer.id
             }).then(function() {
-                console.log({
+                config.log({
                     reciever:reciever,
                     sender:sender,
                     message: self.myPeer.id
                 });
-                console.log('sent with id ' + self.myPeer.id);
+                config.log('sent with id ' + self.myPeer.id);
             });
         },
         handleRemoteHangup: function() {
@@ -77,7 +78,15 @@ export default {
         },
         stop: function() {
             this.showVideoScreen = false;
-            cancelAnimationFrame(this.raf);
+            // releasing webcam and microphone
+            [this.$refs.video, this.$refs.remote].forEach(vid => {
+                if(!vid.srcObject) return;
+                let stream = vid.srcObject;
+                vid.pause();
+                vid.srcObject = null;
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            });
         },
         hangup: function() {
             // Hanging up
@@ -90,9 +99,13 @@ export default {
                 message: 'bye'
             });
         },
+        muteVideo: function() {
+            this.videoMute = !this.videoMute;
+            this.$refs.video.muted = this.videoMute;
+        },
     },
-    beforeRouteLeave:function(to,from,next){
-        if(from.path == "/user/chat"){
+    beforeRouteLeave: function(to, from, next) {
+        if (from.path == "/user/chat") {
             this.$store.dispatch("clearSender");
         }
         next(true);
@@ -110,14 +123,14 @@ export default {
             } else if (message === 'bye') {
                 self.handleRemoteHangup();
             } else {
-                console.log('maybe reciever peer id');
-                console.log(message);
+                config.log('maybe reciever peer id');
+                config.log(message);
                 self.remotePeerId = message;
                 self.connection = self.myPeer.connect(self.remotePeerId)
-                console.log('Now connected: ', self.connection)
+                config.log(self.connection, 'Now connected')
                 self.connection.on('open', () => {
                     self.connection.on('data', newMessage => {
-                        console.log(newMessage);
+                        config.log(newMessage);
                     });
                     self.connection.send('videocall-ready|' + self.myPeer.id);
                 });
@@ -131,11 +144,11 @@ export default {
         };
         this.myPeer = new Peer()
         this.myPeer.on('open', (id) => {
-            console.log('this.myPeer.id: ' + this.myPeer.id + ' this.myPeer.key: ' + this.myPeer.key)
+            config.log('this.myPeer.id: ' + this.myPeer.id + ' this.myPeer.key: ' + this.myPeer.key)
         })
         // Receive messages
         this.myPeer.on('connection', con => {
-            console.log("Receiving messages from peer")
+            config.log("Receiving messages from peer")
             this.connection = con
             con.on('open', () => {
                 con.on('data', newMessage => {
@@ -144,32 +157,36 @@ export default {
                         var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
                         getUserMedia({video: true, audio: true}, function(stream) {
                             self.$refs.video.srcObject = stream;
-                            console.log("Video calling to " + parts[1]);
+                            self.$refs.video.muted = self.videoMute;
+                            config.log("Video calling to " + parts[1]);
                             var call = self.myPeer.call(parts[1], stream);
                             call.on('stream', function(remoteStream) {
                                 self.showVideoScreen = true;
                                 self.$refs.remote.srcObject = remoteStream;
+                                self.$refs.remote.muted = self.remoteMute;
                             });
                         }, function(err) {
-                          console.log('Failed to get local stream' ,err);
+                          config.log('Failed to get local stream', 'getUserMedia error');
                         });
                     }
                 })
-            })
+            });
         });
         var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         this.myPeer.on('call', call => {
-            console.log("Receiving video call from peer");
+            config.log("Receiving video call from peer");
             getUserMedia({video: true, audio: true}, function(stream) {
-            self.$refs.video.srcObject = stream;
-            call.answer(stream);
-            call.on('stream', function(remoteStream) {
-                self.showVideoScreen = true;
-                self.$refs.remote.srcObject = remoteStream;
+                self.$refs.video.srcObject = stream;
+                self.$refs.video.muted = self.videoMute;
+                call.answer(stream);
+                call.on('stream', function(remoteStream) {
+                    self.showVideoScreen = true;
+                    self.$refs.remote.srcObject = remoteStream;
+                    self.$refs.remote.muted = self.remoteMute;
+                });
+            }, function(err) {
+                config.log('Failed to get local stream', 'peer call error');
             });
-          }, function(err) {
-                console.log('Failed to get local stream' ,err);
-          });
         });
     }
 }
@@ -193,7 +210,10 @@ export default {
             <div class="video-call-popup" v-show="showVideoScreen">    
                 <video ref="video" class="local" autoplay muted playsinline></video>
                 <video ref="remote" class="remote" autoplay muted playsinline></video>
-                <button class="hangup" v-on:click="hangup"><i class="fa fa-phone"></i></button>
+                <div class="btn-wrapper">
+                    <button class="hangup" v-on:click="hangup"><i class="fa fa-phone"></i></button>
+                    <button class="mute" v-on:click="muteVideo" v-bind:class="{ 'is-muted': videoMute }"><i v-bind:class="[videoMute ? 'fa fa-microphone-slash' : 'fa fa-microphone']"></i></button>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-6 center-alignment">
@@ -222,15 +242,25 @@ export default {
     top: 50%;
     transform: translate(-50%, -50%);
 }
-.hangup {
+.btn-wrapper {
     position: absolute;
+    left: 50%;
+    bottom: 80px;
+}
+.hangup {
     border: none;
     background: red;
     color: #ffffff;
     border-radius: 100%;
     padding: 10px 16px;
-    left: 50%;
-    bottom: 80px;
+    margin: 10px;
+}
+.mute {
+    border: none;
+    background: grey;
+    color: #ffffff;
+    border-radius: 100%;
+    padding: 10px 16px;
 }
 .video-call-popup {
     position: fixed;
