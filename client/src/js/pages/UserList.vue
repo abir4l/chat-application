@@ -1,7 +1,9 @@
 <script>
   import UserService from '../services/UserService.js';
   import ChatService from '../services/ChatService.js';
+  import nav from '../components/Navigation.vue';
   export default {
+    components:{'navigation':nav},
    data: () => {
     return {
       userList : []
@@ -37,26 +39,39 @@
 
 <template>
 
-  <div class="contents">
+  <div class="contents mt-5">
     <div class="container">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 center-alignment">
+              <navigation></navigation>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="users-wrapper col-md-6">
 
-            <div  v-for="user in userList" :key="user._id">
-              <p>{{user.name}} <small>{{user.email}}</small>
-              <button v-on:click="chatWithUser(user.username)">Chat</button>
-            </p>
-                
+            
+              
+              <div class="detail-contents mt-3" v-for="user in userList" :key="user._id">
+                <div class="display-flex">
+                  <div class="user-profile-pic user-profile-pic-sm">
+                    <span>{{user.name.charAt(0).toUpperCase()}}</span>
+
+                  </div>
+                    <p class=" ml-3 text-color-grey">{{user.name}}</p>
+
+                </div>
+              <div class="">
+                  <button class="btn btn-primary-custom" v-on:click="chatWithUser(user.username)">Chat</button>
+              </div>
             </div>
+              <!-- <p>{{user.name}} <small>{{user.email}}</small>
+              
+            </p> -->
+                
               
 
         </div>
       </div>
-      <div class="row">
-          <div class="col-md-6">
-            <button class="btn btn-primary" type="button" v-on:click="goToHomePage()">Home</button>
-          </div>
-        </div>	
     </div>	
   </div>	
 

@@ -1,48 +1,46 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const common = require('../lib/common');
+const axios = require('axios');
+const qs = require('qs');
+/**
+ *  TODO: make services for controllers
+ */
+
 
 /**
-*
 * @param req
 * @param res
 */
 exports.login = async function (req, res) {
     const { email, password } = req.body;
-    
-    let mongoDb = global.constants.mongoConnection;
-    
+
     const user = await global.constants.database("users").findOne({email:email});
-    console.log(user);
     if (!user) {
         res.status(404).json({
             message: "User not found"
         });
+        return;
     }
 
-    
-    
-    
     bcrypt.compare(password, user.password, (err, result) => {
-        if (err) 
-        res.status(500).json({
-            'message':'something went wrong with the user detail provided'
-        });
-        
-        
+        if (err) {
+            res.status(500).json({
+                'message':'something went wrong with the user detail provided'
+            });
+        }
+
         if (result) {
             user.password = null;
             const userDto = {'email':user.email,'name':user.name,"username":user.username };
             const refreshToken = jwt.sign( userDto, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN + "h" });
             const accessToken = jwt.sign(userDto, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
-   
             res.json({
                 'email':user.email,
                 'username':user.username,
                 refreshToken,
                 accessToken,
             });
-            
         } else {
             res.status(401).json({
                 message: "Unauthenticated"
@@ -57,30 +55,67 @@ exports.login = async function (req, res) {
 * @param res
 * todo handle validation errors
 */
-exports.register = function (req, res) {
+exports.register = async function (req, res) {
     let user = req.body;
+    let errors = [];
+    let required = ['email', 'name', 'password', 'username'];
+
+    required.map((field) => {
+        if (!user.hasOwnProperty(field) || user[field] == '') {
+            errors.push({ [field] : field + " is required"});
+        }
+    });
+
+    if (errors.length > 0) {
+        res.status(400);
+        res.json({
+            'msg': 'Validation Error',
+            'errors': errors
+        });
+    }
+
+    try {
+
+        const emailUser = await global.constants.database("users").findOne({email:user.email}).catch(err => { console.log(err) });
+
+        if (emailUser) {
+            res.status(400).json({
+                message: "Email already in use!"
+            });
+        }
+
+        const userNameUser = await global.constants.database("users").findOne({username:user.username}).catch(err => { console.log(err) });
+
+        if (userNameUser) {
+            res.status(400).json({
+                message: "Username already in use!"
+            });
+        }
+    } catch (err) {
+        res.status(400);
+        res.send('Error while saving the user');
+    }
+
     bcrypt.hash(user.password, global.constants.bycrypt_value, (err, hash) => {
         
         if (err) {
             res.status(500);
             res.json('Error with saving user');
         }
-        
-        user.password = hash;
-        global.constants.database("users")
-        .insertOne(user,(err,result)=>{
-            if (err) {
-                console.log(err);
-                res.status(400);
-                res.send('Error while saving the user');
-            } else {
-                res.send({
-                    url: '',
-                    message: 'saved successfully'
-                });
-            }
-        });
-        
+        try {
+            user.password = hash;
+            global.constants.database("users")
+            .insertOne(user,(err,result)=>{
+                if (!err) {
+                    res.send({
+                        message: 'saved successfully'
+                    });
+                }
+            })
+        } catch(err) {
+            res.status(400);
+            res.send('Error while saving the user');
+        }
     })
 }
 
@@ -104,9 +139,11 @@ exports.getDetails = async function (req, res) {
 }
 
 
+
 exports.getAccessToken = function(req,res){
     const token = common.getToken(req);
     let data =  jwt.verify(token, process.env.JWT_SECRET);
+    
     global.constants.database("users")
     .findOne({ 'email': data.email }, (err, user) => {
         if (err || user == null) {
@@ -119,8 +156,8 @@ exports.getAccessToken = function(req,res){
             * as we are treating refresh token as the remember me token
             * with this the user should be logging out in 24 hours
             * */
-            
-            const accessToken = jwt.sign({'email':user.email,'name':user.name }, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
+
+            const accessToken = jwt.sign({'email':user.email,'name':user.name,'username':user.username }, process.env.JWT_ACCESS_SECRET, { expiresIn:20 + "s" });
             res.json({accessToken});
         }
     });
@@ -143,31 +180,28 @@ exports.wantsToChat = function(req,res){
     res.send('handshake sent');
 }
 
-
 exports.setupChatSocket = (req,res) => {
     
     const {username} = req.body;
     let userSocketHandler = global.constants.userSockets.find(d=>d.username == username);
     
     // don't make new connection if socket exists.
-    // TODO  test if the socket is closed
     if(!userSocketHandler){
         global.constants
         .socketHandler.of(username)
         .on('connection', (socket) => {
-            console.log(`socket opened for ${username}`);
             global.constants.userSockets
-            .push(
-                { 
+            .push({ 
                     username: username,
                     socketHandle: socket
-                } 
-                );
-            });
-        }
-        res.send({
-            message:"socket listening"
-        });
+                });
+            }
+        );
+    }
+    res.send({
+        message:"socket listening",
+        socketfound: userSocketHandler != undefined
+    });
         
     }
     
@@ -181,44 +215,49 @@ exports.logout = function(req,res){
 
 
 exports.sendMessage = async (req,res) => {
-    
-    const {sender,reciever,message} = req.body;
-    
-   await global.constants.database("chatHistory")
-    .insertOne({
-        reciever:reciever,
-        sender:sender,
-        message:message,
-        timestamp:new Date()
-    });
-    global.constants.database("chatHistory")
-    .find(
-        {$or:[
-            {
-                reciever:reciever,
-                sender:sender
-            },
-            {   
-                sender:reciever,
-                reciever:sender
-            }
-    ]}).toArray((er,response)=>{
-        
-        let recieverSocket = global.constants.userSockets.find(d => d.username === reciever);
-        if(recieverSocket){
-            recieverSocket.socketHandle.emit("message",response);
-            console.log(`socket to ${recieverSocket.username}` )
-        }
-        res.json({message:"success",data:response});
-    });
-    
+    // Here type is used to differentiate between message type
+    // type = 1 -> text message 
+    // type = 2 -> video call 
+    const {sender,reciever,message, type} = req.body;
 
+    // if client is using old API version
+    if (typeof type == 'undefined') {
+        type = 1;
+    }
+
+    let data = {sender,reciever,message,type};
+    
+    await global.constants.database("chatHistory")
+            .insertOne({... data,timestamp:new Date(), type: type});
+    
+    global.constants.database("chatHistory")
+            .find(
+            {$or:[
+                {
+                    reciever:reciever,
+                    sender:sender
+                },
+                {   
+                    sender:reciever,
+                    reciever:sender
+                }
+        ]}).sort({timestamp : -1}).limit(5)
+           .toArray((er,response)=>{
+                //send it back to both the sender and reciever, in order to reload all the tabs
+                global.constants.socketHandler.of(reciever).emit("message",response);
+                global.constants.socketHandler.of(sender).emit("message",response);
+            });
+    res.json({message:"success"});
 }
 
+exports.metaMessage = async (req,res) => {
+    const {sender,reciever,message} = req.body;
+    global.constants.socketHandler.of(reciever).emit("meta-message",message);
+    res.json({ success: true });
+}
 
 exports.loadMessage = async(req,res) => {
     const {sender,reciever} = req.body;
-    console.log(sender,reciever);
     let messages = await global.constants.database("chatHistory")
     .find(
         {$or:[
@@ -231,10 +270,36 @@ exports.loadMessage = async(req,res) => {
                 reciever:sender
             }
     ]}
-    ).toArray();
-
+    ).
+    sort({timestamp : -1})
+    .limit(5).toArray();
     res.json(messages);
 
+}
+
+exports.recaptcha = async(req,res) => {
+    if (req.body['Response'] === undefined || req.body['Response'] === '' || req.body['Response'] === null) {
+        return res.json({"responseCode" : 1,"responseDesc" : "Please select captcha"});
+    }
+
+    try {
+        let result = await axios({
+            method: 'post',
+            url: 'https://www.google.com/recaptcha/api/siteverify',
+            params: {
+                secret: '6LdIYVUaAAAAAG_It6dK0M_YFMoF-Ul4zJysBavq',
+                response: req.body['Response']
+            }
+        });
+        let data = result.data || {};
+        if(!data.success){
+            res.json({'success': false});
+        }
+
+        res.json({'success': true});
+    } catch(err) {
+        res.json({'success': false});
+    }
 }
     
     

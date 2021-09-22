@@ -7,7 +7,7 @@ export default {
     component: {},
     data: function () {
         return {
-                // title: "Home",
+                title: "Testing dashboard",
             };
         },
 
@@ -17,7 +17,6 @@ export default {
             ...mapGetters(
             {
                 loggedIn: 'getUserLoginStatus',
-                title: 'getServerSocketData'
             }),
 
         },
@@ -39,7 +38,6 @@ export default {
                 <div class="row">
                     <div class="col-md-6">
                         <h1>{{title}}</h1>
-                        <h2>{{loggedIn}}</h2>
                         <ul class="nav flex-column">
                             <li v-if="!loggedIn">
                                 <router-link to="/login"> Login</router-link>
@@ -57,7 +55,6 @@ export default {
                                 <router-link to="/user/list">Users</router-link>
                             </li>
                              <li v-if="loggedIn">
-                                <router-link to=""></router-link>
                                 <a href="#" v-on:click="doLogout()">Logout</a>
                             </li> 
                         </ul>

@@ -1,5 +1,5 @@
 import store from '../../store/store.js';
-
+import jwtDecode from 'jwt-decode';
 export const authenticatedOnly = (to,from,next) => {
 	next(store.getters.getUserLoginStatus);
 }
@@ -13,21 +13,21 @@ export const authenticatedOnly = (to,from,next) => {
 * page change would do.
 */
 export const loginIfTokenExists = (refreshToken,accessToken,username) => {
-	if(refreshToken){
+	let timeNow = new Date();
+	let refreshTokenObject = jwtDecode(refreshToken);
+	let tokenExpired = refreshToken &&  new Date(refreshTokenObject.exp * 1000) < timeNow;
+	if(!tokenExpired){
 		if(!store.getters.getUserLoginStatus){
-			store.dispatch("login",{
-			accessToken: accessToken,
-			refreshToken:refreshToken,
-			username:username
-		});
-		return true;	
-	}else{
-		return true;
+			store.dispatch('login', {
+				accessToken: accessToken,
+				refreshToken:refreshToken,
+				username:username
+			});
+			return true;	
+		} else {
+			return true;
 		}
-		
 	}
-	store.dispatch("logout");
+	store.dispatch('logout');
 	return false;
-
 }
-

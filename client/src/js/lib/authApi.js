@@ -13,7 +13,6 @@ axiosInstance.interceptors.request.use(
         let tokenObject = jwtDecode(token);
         let expiryTime = new Date(tokenObject.exp * 1000);
         let timeNow = new Date();
-
         //verify token time here
         //get refreshtoken if acccess token is about to expire or is expired
         if (timeNow > expiryTime) { // token expired
@@ -21,7 +20,7 @@ axiosInstance.interceptors.request.use(
             let refreshToken = store.getters.getRefreshToken;
             let refreshTokenObject = jwtDecode(refreshToken);
             if (new Date(refreshTokenObject.exp * 1000) > timeNow) {
-                console.log("fetching new token");
+                config.log("fetching new token");
                 let response = await Axios.post(config.url('user/access-token'), {}, {headers: {"Authorization": "Bearer " + refreshToken}});
                 localStorage.setItem('access_token', response.data.accessToken);
                 token = response.data.accessToken;

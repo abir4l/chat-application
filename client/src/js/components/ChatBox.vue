@@ -4,13 +4,10 @@
   import moment from 'moment';
   export default {
     name: "chat-box",
-    components: { xbutton: xbutton },
-    props: [],
+    components: { xbutton },
+    props: ["chatHistory"],
     computed: {
-    ...mapGetters(
-        {
-            chatHistory: 'getChatHistory',
-        })
+   
     },
     filters: {
       nl2br: function (value) {
@@ -22,8 +19,8 @@
     },
 
     methods: {
-      moment: function () {
-        return moment();
+      moment: function (date) {
+        return moment(date);
       },
       escapedMessage: function (data) {
         return this.$sanitize(data.replaceAll("\n", "<br>"));
@@ -41,14 +38,14 @@
        
         // this.chatHistory.push(this.chatMessage);
         this.$emit("chat",this.chatMessage,(done)=>{
-            
             this.chatMessage = "";
             this.sendingChat = false;
-            this.$refs["chat-box"].focus();    
-
+            this.$refs["chat-box"].focus();
         });
-     
     },
+    videoCall: function () {
+      this.$emit("video");
+    }
   },
   
   data: function () {
@@ -62,15 +59,15 @@
 </script>
 
 <template>
-  <div class="container">
+  <div class="chat-wrapper" style="padding: 5px 0 0 0;">
     <div class="chat-history">
       <div class="chat-contents">
         <div class="chat-message-block" v-bind:class="[{ 'chat-message-from': chat.type === 'from'},{'chat-message-to' : chat.type === 'to' }]" v-for="chat in chatHistory" v-bind:key="chat._id">
           <div class="sender-info"></div>
-          <div class="chat-message-content">
-            <p v-html="escapedMessage(chat.message)"></p>
+          <div class="chat-message-content">            
+            <p><i class="fa fa-video-camera" v-if="chat.message_type == '2'"></i> <span v-html="escapedMessage(chat.message)"></span></p>
           </div>
-          <p class="chat-timing">{{moment(chat.timestamp).format('YYYY-MM-DD HH:mm:ss')}}</p>
+          <p class="chat-timing">{{moment(chat.timestamp.toLocaleString()).format('YYYY-MM-DD HH:mm:ss')}}</p>
         </div>
       </div>
     </div>
@@ -85,56 +82,17 @@
       rows="5"
       v-on:keyup="enterPressed"
       ></textarea>
-      <xbutton @clicked="sendMessage()" :loading="sendingChat">Send</xbutton>
+      <div class="row">
+        <div class="col-md-12 d-flex">
+          <button v-on:click="videoCall()" class="btn btn-primary"><i class="fa fa-video-camera"></i></button>
+          <xbutton @clicked="sendMessage()" :loading="sendingChat" :class="'flex-grow-1'">Send</xbutton>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="css">
-  .chat-message-block {
-    border-radius: 4px;
-    margin: 10px;
-    padding: 10px;
-    width:50%
-  }
-  .chat-message-from{
-    background: #ccc;
-    float:left
-  }
-  .chat-message-to{
-    background: rgb(240, 96, 96);
-    float:right
-  }
-  .chat-history {
-    min-height: 500px;
-    max-height: 500pxpx;
-    overflow-y: scroll;
-    margin-bottom: 10px;
-    border: 3px solid #ccc;
-  }
-  .container {
-    margin-top: 10px;
-  }
-  textarea#message {
-    border-radius: 10px;
-    resize: none;
-  }
-  .chat-action {
-    display: flex;
-    flex-direction: column;
-  }
-  p.chat-timing,
-  .chat-message-content p {
-    margin: 10px;
-  }
+  
 
-  p.chat-timing {
-    font-size: 9pt;
-  }
-  button._button {
-    border: 1px solid #ccc;
-    padding: 5px 10px;
-    background: #49498a;
-    color: white;
-  }
 </style>

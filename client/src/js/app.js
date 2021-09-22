@@ -17,12 +17,12 @@ defaults.allowedTags = defaults.allowedTags.filter((t) => {
 
 Vue.use(sanitize,defaults);
 Vue.prototype.$http = axiosInstance;
-const socketIo = io(config.url(''));
+// const socketIo = io(config.url(''));
 
 
-socketIo.on("logout",(data) =>{
-	store.dispatch("logout");
-});
+// socketIo.on("logout",(data) =>{
+// 	store.dispatch("logout");
+// });
 
 window.app = new Vue({
         el:'#app',

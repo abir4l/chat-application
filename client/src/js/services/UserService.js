@@ -1,4 +1,4 @@
-import api from '../lib/api';
+import api from '../lib/authApi';
 import config from '../config.js';
 // import store from '../store/store.js';
 export default {

@@ -4,9 +4,8 @@ WORKDIR /usr/src/app
 
 EXPOSE 8000
 
-COPY server/src/package.json .
+COPY client .
 
 RUN npm install
 
-CMD ["npm", "run", "dev"]
-
+CMD ["npm", "run", "watch"]

@@ -1,26 +1,23 @@
 import api from '../lib/api.js';
 import config from '../config.js';
 export default {
-
-    register: function (user) {
-        api.post(config.url('user/register'), user)
-            .then(
-                resp => {
-                    debugger;
-                }
-            ).catch(er => {
-                
-                if (er.response) {
-                    if(er.response.status === 400)
-                        console.error('Model validation failed\nRequired fields not provided');
-                }
-                else
-                    console.log(er);
-            });
-
-
+    register: async function (user) {
+        return api.post(config.url('user/register'), user)
+        .then( data => {
+            return {
+                'success': true,
+            }
+        }).catch(err => {
+            if (typeof err.response != 'undefined') {
+                return {
+                    'success': false,
+                    'error': err.response.data.message
+                }   
+            }
+            return {
+                'success': false,
+                'error': "Error occured in server"
+            }
+        });
     }
-
-
-
 }
